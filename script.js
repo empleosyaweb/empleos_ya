@@ -100,10 +100,49 @@
         }
     }
 
+    function injectJobSchema() {
+        if (!window.jobOffers) return;
+        const existingSchema = document.getElementById('dynamic-job-schema');
+        if (existingSchema) existingSchema.remove();
+
+        const schema = {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": window.jobOffers.slice(0, 10).map((offer, index) => ({
+                "@type": "ListItem",
+                "position": index + 1,
+                "item": {
+                    "@type": "JobPosting",
+                    "title": "Oferta Laboral",
+                    "description": offer.descripcion,
+                    "datePosted": "2026-04-28",
+                    "hiringOrganization": {
+                        "@type": "Organization",
+                        "name": "Empleos Ya"
+                    },
+                    "jobLocation": {
+                        "@type": "Place",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressCountry": "CU"
+                        }
+                    }
+                }
+            }))
+        };
+
+        const script = document.createElement('script');
+        script.id = 'dynamic-job-schema';
+        script.type = 'application/ld+json';
+        script.text = JSON.stringify(schema);
+        document.head.appendChild(script);
+    }
+
     function renderJobs() {
         const container = document.getElementById('jobs-container');
         if (!container || !window.jobOffers) return;
         container.innerHTML = window.jobOffers.map(renderCard).join('');
+        injectJobSchema();
         requestAnimationFrame(() => {
             setupScrollAnimations();
             addRippleEffect();
@@ -301,6 +340,15 @@
             if (initial === 'vacantes') renderJobs();
         }
         setInterval(checkSessionTimeout, 60000);
+    }
+
+    // Registro de Service Worker para PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registrado:', reg.scope))
+                .catch(err => console.log('Fallo registro Service Worker:', err));
+        });
     }
 
     if (document.readyState === 'loading') {

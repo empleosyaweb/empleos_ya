@@ -1,14 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Plataforma corporativa de ofertas laborales con contacto directo y seguro.">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' mail.google.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mail.google.com">
-<title>Empleos Ya | Ahorrate Tiempo Buscando</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empleos Ya | Bolsa de Trabajo Corporativa y Contacto Directo</title>
+    
+    <!-- SEO Básico -->
+    <meta name="description" content="Encuentra las mejores ofertas laborales corporativas en Empleos Ya. Conecta directamente con empresas de gastronomía, tecnología, ventas y más. Sin intermediarios, rápido y seguro.">
+    <meta name="keywords" content="empleos, trabajo, bolsa de trabajo, vacantes, cuba, empleo corporativo, gastronomía, ventas, tecnología">
+    <meta name="author" content="Empleos Ya Team">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://empleosyaweb.github.io/empleos_ya/">
+
+    <!-- PWA y Navegador -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Empleos Ya">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://empleosyaweb.github.io/empleos_ya/">
+    <meta property="og:title" content="Empleos Ya | Conecta con tu próximo empleo corporativo">
+    <meta property="og:description" content="Plataforma optimizada para contacto directo con empleadores. Revisa vacantes activas de forma segura y profesional.">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/2563eb/ffffff?text=EMPLEOS+YA">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://empleosyaweb.github.io/empleos_ya/">
+    <meta property="twitter:title" content="Empleos Ya | Bolsa de Trabajo">
+    <meta property="twitter:description" content="Encuentra vacantes activas y contacta directamente por SMS o Gmail.">
+    <meta property="twitter:image" content="https://via.placeholder.com/1200x630/2563eb/ffffff?text=EMPLEOS+YA">
+
+    <!-- Seguridad y Referrer -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://via.placeholder.com; connect-src 'self' mail.google.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mail.google.com">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Datos Estructurados SCHEMA.org (Organization) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Empleos Ya",
+      "url": "https://empleosyaweb.github.io/empleos_ya/",
+      "logo": "https://via.placeholder.com/512x512/2563eb/ffffff?text=EY",
+      "description": "Plataforma corporativa de ofertas laborales con contacto directo y seguro.",
+      "sameAs": [
+        "https://t.me/EMPLEOS_YA"
+      ]
+    }
+    </script>
+
+    <!-- Datos Estructurados SCHEMA.org (WebSite) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://empleosyaweb.github.io/empleos_ya/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://empleosyaweb.github.io/empleos_ya/#vacantes",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 </head>
 <body>
 <div id="access-gate" class="overlay">
@@ -193,6 +253,8 @@
     </footer>
 </div>
 
+<script src="codigos.js"></script>
+<script src="empleos.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
