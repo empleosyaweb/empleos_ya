@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Plataforma corporativa de ofertas laborales con contacto directo y seguro.">
+<title>Empleos Ya | Ahorrate Tiempo Buscando</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="access-gate" class="overlay">
+    <div class="overlay-card">
+        <div class="overlay-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+        </div>
+        <h2>Acceso Restringido</h2>
+        <p>Introduce el código de acceso para continuar</p>
+        <form id="access-form">
+            <input type="text" id="access-code" placeholder="Código de acceso" maxlength="20" required autocomplete="off" />
+            <button type="submit">Acceder</button>
+        </form>
+        <p id="access-error" class="error-msg" style="display:none;">Código incorrecto. Intenta de nuevo.</p>
+    </div>
+</div>
+
+<div id="app-content" style="display:none;">
+    <header class="main-header">
+        <div class="header-container">
+            <a href="#inicio" class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
+                </div>
+                <h1>EMPLEOS|YA</h1>
+                <span class="badge">AHORRATE TIEMPO BUSCANDO</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#inicio" class="nav-link" data-section="inicio">Inicio</a></li>
+                    <li><a href="#vacantes" class="nav-link" data-section="vacantes">Vacantes</a></li>
+                </ul>
+            </nav>
+            <div class="dropdown-wrapper">
+                <button class="dropdown-btn" id="dropdownToggle" aria-expanded="false">
+                    Recursos
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <ul class="dropdown-menu" id="dropdownMenu">
+                    <li><a href="https://t.me/Marcos_Volta" target="_blank" rel="noopener noreferrer">Enviar Ofertas</a></li>
+                    <li><a href="https://t.me/EMPLEOS_YA" target="_blank" rel="noopener noreferrer">Unirse Al Canal</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="page-section active">
+            <div class="hero-banner">
+                <div class="hero-text">
+                    <h2>Conecta con tu próximo empleo corporativo</h2>
+                    <p>Plataforma optimizada para contacto directo, sin intermediarios. Diseño seguro, rápido y profesional.</p>
+                    <button class="btn-primary" id="verVacantesBtn">
+                        Explorar vacantes
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="hero-illustration">
+                    <svg viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="90" r="80" fill="#eff6ff" opacity="0.6"/>
+                        <rect x="40" y="50" width="120" height="80" rx="12" fill="#fff" stroke="#2563eb" stroke-width="2"/>
+                        <path d="M70 70h60M70 90h40M70 110h50" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <section id="vacantes" class="page-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                    </svg>
+                </div>
+                <h2 class="section-title">Vacantes Activas</h2>
+            </div>
+            <div class="jobs-grid" id="jobs-container"></div>
+        </section>
+
+        <section id="terminos" class="page-section">
+            <div class="policy-container">
+                <h2>Términos de Uso</h2>
+                <p>Última actualización: 24 de abril de 2026</p>
+                <p>Al acceder y utilizar este portal, aceptas cumplir con los presentes términos. Si no estás de acuerdo, te pedimos que no utilices nuestros servicios.</p>
+                <h3>Uso del portal</h3>
+                <p>La plataforma está destinada exclusivamente a fines de búsqueda de empleo y publicación de vacantes. No se permite el uso con fines ilegales, fraudulentos o que infrinjan derechos de terceros.</p>
+                <h3>Responsabilidad del usuario</h3>
+                <p>Eres responsable de la veracidad de la información que compartas y de mantener la confidencialidad de tu código de acceso. Empleos Ya no se hace responsable por el contenido de las ofertas publicadas por terceros.</p>
+                <h3>Modificaciones</h3>
+                <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación en esta página.</p>
+            </div>
+        </section>
+
+        <section id="privacidad" class="page-section">
+            <div class="policy-container">
+                <h2>Política de Privacidad</h2>
+                <p>Última actualización: 24 de abril de 2026</p>
+                <p>En Empleos Ya, valoramos tu privacidad. Esta política describe cómo recopilamos, utilizamos y protegemos tu información personal.</p>
+                <h3>Información recopilada</h3>
+                <p>Podemos solicitar permisos de ubicación, notificaciones y almacenamiento para mejorar la experiencia. No almacenamos datos personales sin tu consentimiento explícito.</p>
+                <h3>Uso de la información</h3>
+                <p>Los datos se utilizan exclusivamente para facilitar la conexión entre candidatos y empleadores, así como para mejorar el funcionamiento del sitio.</p>
+                <h3>Contacto</h3>
+                <p>Si tienes dudas sobre esta política, puedes escribirnos a través de nuestros canales oficiales.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="footer-logo">EMPLEOS|YA</span>
+                <span class="footer-badge">AHORRATE TIEMPO BUSCANDO</span>
+            </div>
+            <nav class="footer-links">
+                <a href="#inicio">Inicio</a>
+                <a href="#vacantes">Vacantes</a>
+                <a href="#terminos">Términos</a>
+                <a href="#privacidad">Privacidad</a>
+            </nav>
+            <div class="footer-copy">
+                <span>© 2026 | EMPLEOS YA</span>
+                <span class="footer-partner">Patrocinado por ™️Koowexa</span>
+            </div>
+            <div class="footer-secure">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Contacto directo y seguro
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script src="codigos.js"></script>
+<script src="empleos.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
