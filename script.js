@@ -2,14 +2,44 @@
     'use strict';
     const STORAGE_KEY = 'empleosya_access_granted';
     const OFFER_MAX_CHARS = 1500;
+    const SESSION_TIMEOUT = 3600000;
+    let sessionStartTime = null;
+
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    function validateAccessCode(code) {
+        if (!code || typeof code !== 'string' || code.length > 20) return false;
+        return window.accessCodes && window.accessCodes.includes(code);
+    }
+
+    function checkSessionTimeout() {
+        if (!sessionStartTime) return false;
+        if (Date.now() - sessionStartTime > SESSION_TIMEOUT) {
+            sessionStorage.removeItem(STORAGE_KEY);
+            location.reload();
+            return true;
+        }
+        return false;
+    }
+
     const JOB_ICONS = {
-        cocina: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 13V21M18 13V21M6 13L10 3H14L18 13M6 13H18"/><circle cx="8" cy="9" r="1.5"/><circle cx="16" cy="9" r="1.5"/></svg>`,
-        ventas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><circle cx="12" cy="14" r="2"/></svg>`,
-        tecnologia: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
-        construccion: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.7-3.7a1 1 0 000-1.4L19.8 2.8a1 1 0 00-1.4 0l-3.7 3.7z"/><path d="M2 22l20-20M14 22l8-8M2 2l8 8"/></svg>`,
-        oficina: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="9" y1="12" x2="15" y2="12"/></svg>`,
-        general: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`
+        cocina: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 13V21M18 13V21M6 13L10 3H14L18 13M6 13H18"/><circle cx="8" cy="9" r="1.5"/><circle cx="16" cy="9" r="1.5"/></svg>`,
+        ventas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><circle cx="12" cy="14" r="2"/></svg>`,
+        tecnologia: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+        construccion: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.7-3.7a1 1 0 000-1.4L19.8 2.8a1 1 0 00-1.4 0l-3.7 3.7z"/><path d="M2 22l20-20M14 22l8-8M2 2l8 8"/></svg>`,
+        oficina: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="9" y1="12" x2="15" y2="12"/></svg>`,
+        general: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`
     };
+
     function getJobIcon(desc) {
         const lower = desc.toLowerCase();
         if (/cocin|pizz|ayudante de cocina|gastronom/i.test(lower)) return JOB_ICONS.cocina;
@@ -19,15 +49,12 @@
         if (/especialista|administrat|contable|abogad|rrhh|capital humano/i.test(lower)) return JOB_ICONS.oficina;
         return JOB_ICONS.general;
     }
-    function sanitize(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
+
     function cleanPhone(phone) {
-        if (!phone) return '';
+        if (!phone || typeof phone !== 'string') return '';
         return phone.replace(/[^\d+]/g, '');
     }
+
     function renderCard(offer) {
         if (!offer.movil || !offer.descripcion) return '';
         const id = offer.id || `#${window.jobOffers.indexOf(offer) + 1}`;
@@ -35,15 +62,16 @@
         const smsBody = 'Hola le contacto por la plataforma EMPLEOS_YA y me interesó su oferta laboral.';
         const smsHref = `sms:${clean}?body=${encodeURIComponent(smsBody)}`;
         const jobIcon = getJobIcon(offer.descripcion);
+        const desc = escapeHtml(offer.descripcion);
         return `
-            <div class="job-card" data-id="${id}">
-                <span class="job-id-badge">${id}</span>
+            <div class="job-card" data-id="${escapeHtml(String(id))}">
+                <span class="job-id-badge">${escapeHtml(String(id))}</span>
                 <div class="job-icon">${jobIcon}</div>
                 <h3>Oferta Laboral</h3>
-                <p class="job-desc">${sanitize(offer.descripcion)}</p>
+                <p class="job-desc">${desc}</p>
                 <div class="contact-wrapper">
-                    <a href="${smsHref}" class="contact-btn contact-sms-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <a href="${smsHref}" class="contact-btn" title="Contactar por SMS">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/>
                         </svg>
                         Contactar por SMS
@@ -51,6 +79,7 @@
                 </div>
             </div>`;
     }
+
     function setupScrollAnimations() {
         const cards = document.querySelectorAll('.job-card');
         if ('IntersectionObserver' in window) {
@@ -63,13 +92,14 @@
                 });
             }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
             cards.forEach((card, i) => {
-                card.style.transitionDelay = `${i * 0.06}s`;
+                card.style.transitionDelay = `${i * 0.04}s`;
                 observer.observe(card);
             });
         } else {
             cards.forEach(card => card.classList.add('visible'));
         }
     }
+
     function renderJobs() {
         const container = document.getElementById('jobs-container');
         if (!container || !window.jobOffers) return;
@@ -79,6 +109,7 @@
             addRippleEffect();
         });
     }
+
     function addRippleEffect() {
         document.querySelectorAll('.btn-primary, .contact-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
@@ -94,6 +125,7 @@
             });
         });
     }
+
     function setupHeaderDropdown() {
         const toggle = document.getElementById('dropdownToggle');
         const menu = document.getElementById('dropdownMenu');
@@ -118,6 +150,7 @@
             }
         });
     }
+
     function setupGmailOfferForm() {
         const form = document.getElementById('gmail-offer-form');
         const companyInput = document.getElementById('offer-company');
@@ -166,7 +199,7 @@
                 return;
             }
 
-            const subject = `Nueva oferta de empleo: ${position}`;
+            const subject = `Nueva oferta de empleo: ${company} - ${position}`;
             const body = [
                 'Hola, comparto una nueva oferta laboral para EMPLEOS YA.',
                 '',
@@ -181,9 +214,9 @@
             const gmailUrl = new URL('https://mail.google.com/mail/');
             gmailUrl.searchParams.set('view', 'cm');
             gmailUrl.searchParams.set('fs', '1');
-            if (recipient) gmailUrl.searchParams.set('to', recipient);
-            gmailUrl.searchParams.set('su', subject);
-            gmailUrl.searchParams.set('body', body);
+            if (recipient) gmailUrl.searchParams.set('to', encodeURIComponent(recipient));
+            gmailUrl.searchParams.set('su', encodeURIComponent(subject));
+            gmailUrl.searchParams.set('body', encodeURIComponent(body));
             window.open(gmailUrl.toString(), '_blank', 'noopener,noreferrer');
             showStatus('Gmail se abrió en una nueva pestaña con la oferta preparada.', 'success');
         });
@@ -220,6 +253,7 @@
             if (document.getElementById(hash)) showSection(hash);
         });
     }
+
     function initAccessGate() {
         const overlay = document.getElementById('access-gate');
         const appContent = document.getElementById('app-content');
@@ -228,6 +262,7 @@
         const errorMsg = document.getElementById('access-error');
         if (!overlay || !appContent) return;
         if (sessionStorage.getItem(STORAGE_KEY) === 'true') {
+            sessionStartTime = Date.now();
             overlay.style.display = 'none';
             appContent.style.display = 'block';
             setupApp();
@@ -238,7 +273,8 @@
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             const code = input.value.trim();
-            if (window.accessCodes && window.accessCodes.includes(code)) {
+            if (validateAccessCode(code)) {
+                sessionStartTime = Date.now();
                 sessionStorage.setItem(STORAGE_KEY, 'true');
                 overlay.style.display = 'none';
                 appContent.style.display = 'block';
@@ -250,6 +286,7 @@
             }
         });
     }
+
     function setupApp() {
         setupHeaderDropdown();
         setupNavigation();
@@ -262,9 +299,10 @@
                 l.classList.toggle('active', l.dataset.section === initial);
             });
             if (initial === 'vacantes') renderJobs();
-            if (initial === 'enviar-oferta') setupGmailOfferForm();
         }
+        setInterval(checkSessionTimeout, 60000);
     }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initAccessGate);
     } else {
