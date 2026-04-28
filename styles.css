@@ -439,3 +439,90 @@ gap: 0.75rem;
 .section-title { font-size: 1.5rem; }
 .job-card { padding: 1.2rem; }
 }
+
+.gmail-offer-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: var(--radius-lg);
+box-shadow: var(--shadow-sm);
+padding: 2rem;
+display: grid;
+grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+gap: 2rem;
+align-items: start;
+}
+.gmail-offer-copy h3 {
+font-size: 1.35rem;
+font-weight: 700;
+color: var(--primary);
+margin-bottom: 0.75rem;
+}
+.gmail-offer-copy p {
+color: var(--text-muted);
+line-height: 1.7;
+}
+.gmail-offer-form {
+display: flex;
+flex-direction: column;
+gap: 1rem;
+}
+.form-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 1rem;
+}
+.gmail-offer-form label {
+display: flex;
+flex-direction: column;
+gap: 0.45rem;
+font-weight: 600;
+color: var(--primary);
+font-size: 0.92rem;
+}
+.gmail-offer-form input,
+.gmail-offer-form textarea {
+width: 100%;
+border: 2px solid var(--border);
+border-radius: var(--radius);
+padding: 0.85rem 1rem;
+font: inherit;
+color: var(--text-main);
+background: #fff;
+transition: border-color var(--transition), box-shadow var(--transition);
+outline: none;
+}
+.gmail-offer-form textarea {
+resize: vertical;
+min-height: 180px;
+}
+.gmail-offer-form input:focus,
+.gmail-offer-form textarea:focus {
+border-color: var(--accent);
+box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+.optional-label {
+font-weight: 500;
+color: var(--text-muted);
+font-size: 0.8rem;
+}
+.form-meta {
+display: flex;
+justify-content: space-between;
+gap: 1rem;
+font-size: 0.85rem;
+color: var(--text-muted);
+flex-wrap: wrap;
+}
+.limit-warning { color: #b45309; font-weight: 700; }
+.limit-error, .form-status.error { color: #dc2626; font-weight: 700; }
+.form-status.success { color: #15803d; font-weight: 700; }
+.gmail-submit-btn {
+justify-content: center;
+width: fit-content;
+}
+
+@media (max-width: 768px) {
+.gmail-offer-card { grid-template-columns: 1fr; padding: 1.5rem; }
+.form-grid { grid-template-columns: 1fr; }
+.gmail-submit-btn { width: 100%; }
+}

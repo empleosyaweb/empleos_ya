@@ -1,6 +1,7 @@
 (function () {
     'use strict';
     const STORAGE_KEY = 'empleosya_access_granted';
+    const OFFER_MAX_CHARS = 1500;
     const JOB_ICONS = {
         cocina: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 13V21M18 13V21M6 13L10 3H14L18 13M6 13H18"/><circle cx="8" cy="9" r="1.5"/><circle cx="16" cy="9" r="1.5"/></svg>`,
         ventas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><circle cx="12" cy="14" r="2"/></svg>`,
@@ -117,6 +118,77 @@
             }
         });
     }
+    function setupGmailOfferForm() {
+        const form = document.getElementById('gmail-offer-form');
+        const companyInput = document.getElementById('offer-company');
+        const positionInput = document.getElementById('offer-position');
+        const recipientInput = document.getElementById('offer-recipient');
+        const descriptionInput = document.getElementById('offer-description');
+        const counter = document.getElementById('offer-char-counter');
+        const status = document.getElementById('offer-form-status');
+        if (!form || !descriptionInput || !counter || !status || form.dataset.gmailReady === 'true') return;
+        form.dataset.gmailReady = 'true';
+
+        function updateCounter() {
+            const length = descriptionInput.value.length;
+            counter.textContent = `${length}/${OFFER_MAX_CHARS} caracteres`;
+            counter.classList.toggle('limit-warning', length > OFFER_MAX_CHARS * 0.9 && length <= OFFER_MAX_CHARS);
+            counter.classList.toggle('limit-error', length > OFFER_MAX_CHARS);
+        }
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = type ? `form-status ${type}` : 'form-status';
+        }
+
+        descriptionInput.addEventListener('input', updateCounter);
+        updateCounter();
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const company = companyInput.value.trim();
+            const position = positionInput.value.trim();
+            const recipient = recipientInput.value.trim();
+            const description = descriptionInput.value.trim();
+
+            if (!company || !position || !description) {
+                showStatus('Completa empresa, cargo y descripción antes de enviar.', 'error');
+                return;
+            }
+            if (description.length > OFFER_MAX_CHARS) {
+                showStatus(`La descripción supera el límite de ${OFFER_MAX_CHARS} caracteres.`, 'error');
+                descriptionInput.focus();
+                return;
+            }
+            if (recipient && !recipientInput.checkValidity()) {
+                showStatus('Ingresa un correo válido o deja el destinatario vacío.', 'error');
+                recipientInput.focus();
+                return;
+            }
+
+            const subject = `Nueva oferta de empleo: ${position}`;
+            const body = [
+                'Hola, comparto una nueva oferta laboral para EMPLEOS YA.',
+                '',
+                `Empresa o contacto: ${company}`,
+                `Puesto o cargo: ${position}`,
+                '',
+                'Descripción:',
+                description,
+                '',
+                'Enviado desde la plataforma EMPLEOS YA.'
+            ].join('\n');
+            const gmailUrl = new URL('https://mail.google.com/mail/');
+            gmailUrl.searchParams.set('view', 'cm');
+            gmailUrl.searchParams.set('fs', '1');
+            if (recipient) gmailUrl.searchParams.set('to', recipient);
+            gmailUrl.searchParams.set('su', subject);
+            gmailUrl.searchParams.set('body', body);
+            window.open(gmailUrl.toString(), '_blank', 'noopener,noreferrer');
+            showStatus('Gmail se abrió en una nueva pestaña con la oferta preparada.', 'success');
+        });
+    }
+
     function setupNavigation() {
         const sections = document.querySelectorAll('.page-section');
         const links = document.querySelectorAll('.nav-link');
@@ -130,6 +202,7 @@
                 if (l.dataset.section === id) l.classList.add('active');
             });
             if (id === 'vacantes') renderJobs();
+            if (id === 'enviar-oferta') setupGmailOfferForm();
         }
         links.forEach(l => l.addEventListener('click', e => {
             e.preventDefault();
@@ -180,6 +253,7 @@
     function setupApp() {
         setupHeaderDropdown();
         setupNavigation();
+        setupGmailOfferForm();
         const initial = window.location.hash.slice(1) || 'inicio';
         if (document.getElementById(initial)) {
             document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
@@ -188,6 +262,7 @@
                 l.classList.toggle('active', l.dataset.section === initial);
             });
             if (initial === 'vacantes') renderJobs();
+            if (initial === 'enviar-oferta') setupGmailOfferForm();
         }
     }
     if (document.readyState === 'loading') {

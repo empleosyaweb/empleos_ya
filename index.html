@@ -49,7 +49,7 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <ul class="dropdown-menu" id="dropdownMenu">
-                    <li><a href="https://t.me/Marcos_Volta" target="_blank" rel="noopener noreferrer">Enviar Ofertas</a></li>
+                    <li><a href="#enviar-oferta" class="nav-link" data-section="enviar-oferta">Enviar Oferta por Gmail</a></li>
                     <li><a href="https://t.me/EMPLEOS_YA" target="_blank" rel="noopener noreferrer">Unirse Al Canal</a></li>
                 </ul>
             </div>
@@ -89,6 +89,54 @@
                 <h2 class="section-title">Vacantes Activas</h2>
             </div>
             <div class="jobs-grid" id="jobs-container"></div>
+        </section>
+
+
+        <section id="enviar-oferta" class="page-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/>
+                    </svg>
+                </div>
+                <h2 class="section-title">Enviar oferta por Gmail</h2>
+            </div>
+            <div class="gmail-offer-card">
+                <div class="gmail-offer-copy">
+                    <h3>Comparte una nueva vacante</h3>
+                    <p>Completa los datos de la oferta y se abrirá una ventana de Gmail con el correo preparado. El contenido principal de la oferta no puede superar los <strong>1500 caracteres</strong>.</p>
+                </div>
+                <form id="gmail-offer-form" class="gmail-offer-form" novalidate>
+                    <div class="form-grid">
+                        <label>
+                            Nombre de la empresa o contacto
+                            <input type="text" id="offer-company" maxlength="120" placeholder="Ej.: Restaurante Central" required>
+                        </label>
+                        <label>
+                            Puesto o cargo
+                            <input type="text" id="offer-position" maxlength="120" placeholder="Ej.: Ayudante de cocina" required>
+                        </label>
+                    </div>
+                    <label>
+                        Correo destinatario en Gmail <span class="optional-label">opcional</span>
+                        <input type="email" id="offer-recipient" placeholder="destinatario@gmail.com">
+                    </label>
+                    <label>
+                        Descripción de la oferta
+                        <textarea id="offer-description" maxlength="1500" rows="8" placeholder="Describe requisitos, funciones, horario, salario, ubicación y forma de contacto." required></textarea>
+                    </label>
+                    <div class="form-meta">
+                        <span id="offer-char-counter">0/1500 caracteres</span>
+                        <span id="offer-form-status" role="status" aria-live="polite"></span>
+                    </div>
+                    <button type="submit" class="btn-primary gmail-submit-btn">
+                        Abrir Gmail para enviar
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
         </section>
 
         <section id="terminos" class="page-section">
