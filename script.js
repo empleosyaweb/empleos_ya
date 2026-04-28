@@ -2,7 +2,7 @@
     'use strict';
     const STORAGE_KEY = 'empleosya_access_granted';
     const OFFER_MAX_CHARS = 1500;
-    const SESSION_TIMEOUT = 3600000;
+    const SESSION_TIMEOUT = 3600000; // 1 hora
     let sessionStartTime = null;
 
     function escapeHtml(text) {
@@ -16,9 +16,22 @@
         return text.replace(/[&<>"']/g, m => map[m]);
     }
 
+    /**
+     * Valida el código de acceso contra la lista global.
+     * Mejora: Limpieza de espacios y normalización a mayúsculas para evitar errores de usuario.
+     */
     function validateAccessCode(code) {
-        if (!code || typeof code !== 'string' || code.length > 20) return false;
-        return window.accessCodes && window.accessCodes.includes(code);
+        if (!code || typeof code !== 'string') return false;
+        const cleanCode = code.trim().toUpperCase();
+        if (cleanCode.length > 20) return false;
+        
+        // Verifica si la lista de códigos existe
+        if (!window.accessCodes || !Array.isArray(window.accessCodes)) {
+            console.error('Error: La lista de códigos de acceso no está cargada.');
+            return false;
+        }
+        
+        return window.accessCodes.includes(cleanCode);
     }
 
     function checkSessionTimeout() {
@@ -293,6 +306,10 @@
         });
     }
 
+    /**
+     * Inicializa la barrera de acceso.
+     * Mejora: Limpieza de errores al escribir y soporte para tecla Enter.
+     */
     function initAccessGate() {
         const overlay = document.getElementById('access-gate');
         const appContent = document.getElementById('app-content');
@@ -300,6 +317,8 @@
         const input = document.getElementById('access-code');
         const errorMsg = document.getElementById('access-error');
         if (!overlay || !appContent) return;
+
+        // Verificar sesión persistente
         if (sessionStorage.getItem(STORAGE_KEY) === 'true') {
             sessionStartTime = Date.now();
             overlay.style.display = 'none';
@@ -307,11 +326,18 @@
             setupApp();
             return;
         }
+
         overlay.style.display = 'flex';
         appContent.style.display = 'none';
+
+        // Ocultar mensaje de error cuando el usuario empieza a escribir de nuevo
+        input.addEventListener('input', () => {
+            errorMsg.style.display = 'none';
+        });
+
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            const code = input.value.trim();
+            const code = input.value;
             if (validateAccessCode(code)) {
                 sessionStartTime = Date.now();
                 sessionStorage.setItem(STORAGE_KEY, 'true');
@@ -321,6 +347,8 @@
             } else {
                 errorMsg.style.display = 'block';
                 input.classList.add('shake');
+                input.value = ''; // Limpiar campo para nuevo intento
+                input.focus();
                 setTimeout(() => input.classList.remove('shake'), 500);
             }
         });
