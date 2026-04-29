@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://empleosyaweb.github.io/empleos_ya/sitemap.xml
+
+# Crawl-delay for Bing to avoid overloading (optional but good practice for small sites)
+User-agent: bingbot
+Crawl-delay: 1

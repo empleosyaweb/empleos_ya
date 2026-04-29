@@ -121,23 +121,37 @@
         const schema = {
             "@context": "https://schema.org",
             "@type": "ItemList",
-            "itemListElement": window.jobOffers.slice(0, 10).map((offer, index) => ({
+            "name": "Bolsa de Trabajo Activa - Empleos Ya",
+            "description": "Lista de vacantes laborales actualizadas en Cuba.",
+            "itemListElement": window.jobOffers.slice(0, 20).map((offer, index) => ({
                 "@type": "ListItem",
                 "position": index + 1,
                 "item": {
                     "@type": "JobPosting",
-                    "title": "Oferta Laboral",
+                    "title": offer.descripcion.split('.')[0].substring(0, 60) || "Oferta Laboral",
                     "description": offer.descripcion,
-                    "datePosted": "2026-04-28",
+                    "datePosted": "2026-04-29",
+                    "validThrough": "2026-05-29",
+                    "employmentType": "FULL_TIME",
                     "hiringOrganization": {
                         "@type": "Organization",
-                        "name": "Empleos Ya"
+                        "name": "Empleos Ya",
+                        "sameAs": "https://t.me/EMPLEOS_YA"
                     },
                     "jobLocation": {
                         "@type": "Place",
                         "address": {
                             "@type": "PostalAddress",
-                            "addressCountry": "CU"
+                            "addressCountry": "CU",
+                            "addressRegion": "La Habana"
+                        }
+                    },
+                    "baseSalary": {
+                        "@type": "MonetaryAmount",
+                        "currency": "CUP",
+                        "value": {
+                            "@type": "QuantitativeValue",
+                            "unitText": "MONTH"
                         }
                     }
                 }
