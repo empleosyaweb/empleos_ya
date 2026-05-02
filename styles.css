@@ -188,7 +188,7 @@ main { max-width: 1000px; margin: 0 auto; padding: 1rem; }
 .section-icon { width: 28px; height: 28px; color: var(--accent); }
 .section-title { font-size: 1.3rem; font-weight: 700; }
 
-/* Grid de vacantes (tarjetas simples) */
+/* Grid de vacantes */
 .jobs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -231,14 +231,13 @@ main { max-width: 1000px; margin: 0 auto; padding: 1rem; }
 }
 .job-icon svg { width: 16px; height: 16px; }
 .job-card h3 { font-size: 0.9rem; font-weight: 600; }
+
+/* AQUÍ EL CAMBIO CLAVE: se elimina el truncado y se muestra todo el texto */
 .job-desc {
   font-size: 0.85rem;
   color: var(--text-muted);
   line-height: 1.45;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  word-break: break-word;
 }
 
 /* Gmail offer */
