@@ -1,26 +1,23 @@
 {
-  "name": "Empleos Ya | Bolsa de Trabajo Corporativa",
+  "name": "Empleos Ya | Ahorrate Tiempo Buscando",
   "short_name": "Empleos Ya",
   "description": "Plataforma corporativa de ofertas laborales con contacto directo y seguro.",
-  "start_url": "/empleos_ya/index.html",
-  "scope": "/empleos_ya/",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2563eb",
   "orientation": "portrait",
-  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "https://via.placeholder.com/192x192/2563eb/ffffff?text=EY",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "https://empleosyaweb.github.io/empleos_ya/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
     },
     {
       "src": "https://via.placeholder.com/192x192/2563eb/ffffff?text=EY",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "https://via.placeholder.com/512x512/2563eb/ffffff?text=Empleos+Ya",
@@ -33,35 +30,16 @@
     {
       "name": "Ver Vacantes",
       "short_name": "Vacantes",
-      "description": "Explora las últimas ofertas laborales",
-      "url": "/empleos_ya/index.html#vacantes",
+      "url": "index.html#vacantes",
       "icons": [{ "src": "https://via.placeholder.com/192x192/2563eb/ffffff?text=V", "sizes": "192x192" }]
     },
     {
       "name": "Enviar Oferta",
       "short_name": "Enviar",
-      "description": "Publica una nueva vacante vía Gmail",
-      "url": "/empleos_ya/index.html#enviar-oferta",
+      "url": "index.html#enviar-oferta",
       "icons": [{ "src": "https://via.placeholder.com/192x192/2563eb/ffffff?text=E", "sizes": "192x192" }]
     }
   ],
-  "categories": ["business", "productivity", "utilities"],
-  "lang": "es",
-  "dir": "ltr",
-  "screenshots": [
-    {
-      "src": "https://via.placeholder.com/1280x720/2563eb/ffffff?text=Desktop+Preview",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Vista de escritorio de Empleos Ya"
-    },
-    {
-      "src": "https://via.placeholder.com/720x1280/2563eb/ffffff?text=Mobile+Preview",
-      "sizes": "720x1280",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Vista móvil de Empleos Ya"
-    }
-  ]
+  "categories": ["business", "productivity"],
+  "lang": "es"
 }

@@ -3,163 +3,115 @@
     window.jobOffers = [
         {
             id: '#01',
-            descripcion: 'Busco gestores de venta para plantas, estaciones de energía, kits y paneles solares, generadores, baterías y más. Comisiones aseguradas y pagos flexibles en USD, moneda local o transferencia. ¿Te unes al equipo?',
-            movil: '+5358647946'
+            info: 'Solicito guardias para trabajar en Sódimac Cuautitlán Izcalli, hombres y mujeres, contratación inmediata, acepto copias. Manda WhatsApp 55 66 78 11. Turnos 12x12, sueldo mensual 11mil hasta 12mil.'
         },
         {
             id: '#02',
-            descripcion: 'Únete a nuestro grupo de gestores comerciales. Ofrecemos electrodomésticos a precio competitivo, soporte profesional y comisiones libres sobre la venta base. Alcanza tus metas con nosotros.',
-            movil: '+5355669226'
+            info: 'Se busca dependiente y cajera con experiencia. Tienda ubicada en Habana vieja. Escribir al pv 58875422 solo x Whatsapp.'
         },
         {
             id: '#03',
-            descripcion: 'MIPYME Electrodomésticos SG busca gestores comerciales. Comisión base de 5-10 USD por equipo vendido más margen libre de ganancia adicional. Oportunidad inmediata.',
-            movil: '+5356385067'
+            info: 'SE REQUIERE DEPENDIENTE, COCINERO/RA PARA LOCAL EN LA HABANA VIEJA. EXCELENTE PORTE Y ASPECTO. BUENA COMUNICACIÓN INTERPERSONAL. DESEOS DE TRABAJAR Y SER RESPONSABLE. EXPERIENCIA BÁSICA EN LA GASTRONOMÍA. PERSONA CARISMÁTICA. NO ES IMPORTANTE QUE DOMINE CAJA O IPV. IMPORTANTE QUE HAGA GESTIÓN DE VENTA Y SEA UNA PERSONA ACTIVA Y RESPONSABLE. Teléfono: 50357470.'
         },
         {
             id: '#04',
-            descripcion: 'Oportunidad laboral: Promotor(a) de servicios de diseño web KOOWEXA. Buscamos perfil proactivo para captación de clientes. Información y citas presenciales. Comisión del 10% al 15% por venta cerrada.',
-            movil: '+5355117403'
+            info: 'Ofertas de empleo en La Habana. Contamos con vacantes para diferentes perfiles y niveles de experiencia. Solo via WhatsApp, no respondemos comentarios. Oportunidades disponibles en sector estatal y privado. Se solicitan: Dependientes de tienda, Custodios, Auxiliares de limpieza, Mensajeros, Dependientes gastronómicos, Camareros, Cocineros y ayudantes de cocina, Personal de jefatura, Técnicos eléctricos, Albañiles, Peluqueros / Barberos, Auxiliares administrativos, Recepcionistas, Plazas para universitarios e ingenieros. Interesados escribir al WhatsApp: 59466457. Bolsa laboral actualizada 2026–2027.'
         },
         {
             id: '#05',
-            descripcion: 'Se busca cocinero con experiencia para restaurante en Marianao. Salario fijo + porcentaje de utilidades. Turnos 2x2 (9am a 10pm). Traer currículum actualizado. Dirección: Calle 31 e/ 76 y 74.',
-            movil: '+5353447354'
+            info: 'Especialista en Nómina. Se requiere experiencia en la actividad. Se efectuan otros pagos adicionales mensuales según la legislación vigente. General: Planifica, organiza, controla y ejecuta todo lo relacionado con la actividad económica en la gestión de los recursos humanos. Algunas Tareas principales: Actualizar el modelo de liquidación de nómina de todos los trabajadores al cierre del mes. Archivar con la calidad requerida toda la documentación del pago de salario mensual. Calcula y captar el pago por promedio de los días feriados del año y el pago doble del feriado trabajado. Calcula y revisar las retroactividades de salarios, indemnizaciones y pagos adicionales a ejecutar. Calcular el importe de subsidios y accidentes de trabajo. Conciliar con entidades exteriores pertinentes los procesos de jubilación, fallecidos e incremento de cuantía. Grado mínimo de escolaridad: Universitario y/o Técnico. Especialidades profesionales: Lic. y/o Tec. en economía y/o contabilidad y finanzas. Contacto: 72143199, +53 21 34896.'
         },
         {
             id: '#06',
-            descripcion: 'Se busca Dependienta y Pizzero para Café Intermedio, esquina Cine Yara. Incorporación inmediata. Ambiente profesional y estabilidad laboral.',
-            movil: '+5363183815'
+            info: 'Se busca cocinero con experiencia para Restaurante en Marianao. Salario fijo de 2500 más porciento de las utilidades. Turnos 2x2 de 9am a 10pm. Traer currículum. Solo personas serias y con experiencia probada. Dirección calle 31 e/ 76 y 74. Contacto: +53 5 3447354.'
         },
         {
             id: '#07',
-            descripcion: 'Se necesita Pizzero con experiencia comprobada para zona del Cerro. Requisito indispensable: dominio de técnicas de masa y horneado. Excelente remuneración.',
-            movil: '+5358419310'
+            info: 'Se busca personal para Negocio (Café-Bar) 10 de Octubre, Mónaco. Plazas Vacantes: Dependiente, Cajero, Barista o Bartender, Lunchero. Reglas del Lugar: Ofrecemos Uniforme de la Casa (Pullover y Gorra). Está prohibido el uso del Celular, solo en circunstancias de urgencia. El Horario es de 9am-11pm. Cada error se paga. No se pueden recibir visitas. Los itinerarios son de 1000 pesos de salario fijo más el 5% de las ventas dividido entre los trabajadores del turno. Para más información contactar solo por WhatsApp al 58858608, no respondo llamadas, solo mensajes. Personas competentes, interesadas con disponibilidad inmediata, rápidos y eficientes.'
         },
         {
             id: '#08',
-            descripcion: 'Se solicitan empleados para nuevo concepto de cafetería. Buscamos perfiles dinámicos y orientados al servicio. Comunícate directamente para entrevista.',
-            movil: '+5358867316'
+            info: 'SE NECESITA PIZZERO CON EXPERIENCIA, CERRO. WHATSAPP 58419310. POR FAVOR ESTAR CONSCIENTE DE QUE HACE BUENA PIZZA.'
         },
         {
             id: '#09',
-            descripcion: 'Se busca trabajador para punto de copiado e impresión en Playa. Experiencia en manejo de equipos, digitalización de documentos y series audiovisuales. Contratación directa.',
-            movil: '+5358236379'
+            info: 'Se busca DEPENDIENTA y PIZZERO Cafe INTERMEDIO esquina cine Yara. Escribir al whatsapp +53 63183815.'
         },
         {
             id: '#10',
-            descripcion: 'Busco dependiente mujer para turno de 12 horas (por el día). Local ubicado en la loma de los zapotes SMP. Requisitos: vivir cerca, enviar foto por WhatsApp, ganas de trabajar y aprender, sepa trabajar en equipo.',
-            movil: '+5352438260'
+            info: 'Se solicitan empleados en nuestro innovador concepto nuevo de cafetería. Los interesados pueden comunicarse para más detalles al teléfono: 58867316.'
         },
         {
             id: '#11',
-            descripcion: 'Se solicita dependiente mujer entre 20 y 35 años, con experiencia con Ipv y trabajo con el público, para punto de venta ubicado en Serrano y Santa Emilia.',
-            movil: '+5350633647'
+            info: 'Plaza Disponible de Agente de Seguridad y Protección en Sucursal Servicios Logísticos Centro. Salario: 6913 CUP Mensual + 5000 CUP de pago por Resultados Mensuales en dependencia de los resultados de cada trabajador + Horas extras: 20.40 CUP por cada hora + 13000 CUP de pago de utilidades Trimestral en dependencia de los ingresos de la Entidad. Lugar: Área Venceremos, Municipio Cotorro perteneciente a la Sucursal de Servicios Logísticos Centro. Nota: Se necesita personal del Municipio Cotorro. Teléfonos: 76053828, Ext.: 3517 y 3511. 55581117: Yadira, Jefa Recursos Humanos. 59967727: Arlem, Directora de la Entidad. Email: rh-baselog@metro.ausa.cu. Para recoger documentos de Solicitud de Empleo: Área ubicada en Calle 100 y Ojo de Agua #301, Consejo Popular Eléctrico, Municipio Arroyo Naranjo, La Habana.'
         },
         {
             id: '#12',
-            descripcion: 'Mipyme Zafira S.U.R.L convoca plaza de Especialista Económica. Ubicado en Manrique 211 entre Concordia y Virtudes, municipio Centro Habana. Requisitos: experiencia en la plaza, dominio del sistema Versat, nómina, producción y ficha técnica, ser mayor de 40 años.',
-            movil: '+5363400396'
+            info: 'Se solicita Auxiliares Generales en áreas del Turismo. Contacto: Inarvis - sivrani1706@gmail.com - 56706190 - Calle 19 entre 10 y 12 Plaza de la Revolución.'
         },
         {
             id: '#13',
-            descripcion: '1y70 Restaurante Karai busca dependientas con experiencia y buena presencia, y cocinero con curriculum.',
-            movil: '+5355592497'
+            info: '¡Oportunidad de negocio! Gestores de Venta Necesarios. Únete a nuestro equipo de ventas y gana comisiones por cada venta realizada. Somos una empresa de venta de productos variados, desde artículos para uñas, accesorios para motos y carros, ventiladores, juguetes para niños, y más. Detalles del puesto: Venta de productos de primera mano, Comisión por cada venta realizada, Actualización de productos y precios todos los domingos por la noche, Acceso a subgrupos de ofertas exclusivas. Requisitos: Disponibilidad para publicar y vender productos en línea, Conocimientos básicos de redes sociales y plataformas de venta en línea, Buena comunicación y habilidades de venta. Cómo unirse: 1. Únete a la comunidad de WhatsApp: https://chat.whatsapp.com/CAd4Q7ExMND1fujvuZFxfb 2. Envía un mensaje al administrador: https://wa.me/59767581 3. Comienza a publicar y vender ¡ya! Ubicación: Santos Suárez, Diez de octubre. ¡No te pierdas esta oportunidad! ¡Únete ahora y comienza a ganar comisiones!'
         },
         {
             id: '#14',
-            descripcion: 'Nuestra MIPYME busca ingeniero civil o arquitecto para hacer levantamiento en obras de materiales.',
-            movil: '+5353859900'
+            info: 'Se busca trabajo de dependienta en el municipio 10 de octubre o cercanos, zonas como el Sevillano, la víbora, el Mónaco, santo Suárez. Tengo Experiencia. Buena presencia, actitud positiva y dinámica. También puedo llevar redes sociales y pedidos online. Contactar por WhatsApp 56868265.'
         },
         {
             id: '#15',
-            descripcion: 'DELTHA SEGURIDAD necesita cubrir plazas de Especialista en Sistema de Gestión de Calidad y Especialista en Administración de Redes. Ambas plazas de nivel superior. Condiciones: línea corporativa, condiciones de trabajo para el desempeño laboral. Pago por resultado y utilidades, uniforme administrativo. Personal de zonas aledañas a Calle Colón / Independencia y Final, Reparto Martí Cerro.',
-            movil: '+5352792780'
+            info: 'Se busca chofer para triciclo de carga. Se necesita chofer, es para manejar un triciclo el trabajo consiste transportar mercancía, el salario entre $10,000 y $40,000 quincenal, ser del Vedado o lugares cercanos, tener licencia A o A1 con 3 años o más de experiencia, edad entre 25 y 35 años, si no tiene estos requisitos por favor no escribir en vano, buscamos personas serias y con ganas de trabajar, escribir solo por Whatsapp 58059319 los interesados enviar fotos de su licencia por delante y detrás, decir su nombre completo y lugar de residencia, no llamadas. Contacto: +53 5 8059316.'
         },
         {
             id: '#16',
-            descripcion: 'Se buscan pizzeros y dependientes con experiencia demostrable y CURRICULUM. Para restaurante Parrandas Grill Bar en la Víbora, 10 de octubre. Solo personal con experiencia.',
-            movil: '+5353706174'
+            info: 'La UEB villa cristal perteneciente a la Empresa provincial de alojamiento busca cubrir las siguientes plazas: Técnico en gestión documental salario de 4010.00, Técnico en compra venta al comercio interior salario de 4010.00, Contador salario de 4410.00, Técnico en la gestión de recursos humanos salario de 4010.00.'
         },
         {
             id: '#17',
-            descripcion: 'El bar de tapas "La Caña" ubicado en el Vedado ofrece plaza de ayudante de cocina. La experiencia es un plus. Dirección: G entre Calzada y 9na. Comunicarse por WhatsApp o presentarse directamente.',
-            movil: '+5359494714'
+            info: 'Convocatoria de Empleo – Dirección Adjunta, Grupo de Seguridad y Protección. Cargo: Técnico en Punto de Dirección. Salario: $6,800.00 + pagos por resultados + utilidades trimestrales. Ubicación: Avenida 17A No.16418 entre 164 y 174, Reparto Cubanacán, Playa (sin transporte disponible). Plazo de solicitud: del 9 al 29 de abril de 2026. Requisitos: Graduado de Nivel Medio Superior. Funciones principales: Máxima autoridad en el servicio de guardia durante turnos de 24 horas. Dirigir relevos y tomar decisiones en ausencia de la Dirección General. Controlar planes especiales de seguridad, incendios, evacuación y reducción de riesgos. Supervisar medios técnicos de protección (SADI, SACI, CCTV, etc.). Custodiar información clasificada y elaborar partes diarios para el Puesto de Dirección del BCC. Entrega de solicitudes: Grupo de Capital Humano. Teléfonos: 7862-7945 / 5279-1838. Sito en: Lamparilla No 164 entre Cuba y Aguiar. Habana Vieja.'
         },
         {
             id: '#18',
-            descripcion: 'Se necesita pizzero (no hay que hacer la masa) para cafetería en el Vedado. Salario de 1500 pesos por día de trabajo, horario de 8 am a 7:30 pm.',
-            movil: '+5352701223'
+            info: 'Empresa Cubana del Gas S.A. Cargo: Esp. B en Ahorro y Uso Racional de la Energía. Salario: 19577 + utilidades mensuales. Horario: 8 hrs de Lunes a Viernes. Requisitos: Graduado de Nivel Superior, Dominio del paquete Office, Cursos de superación vinculados con la actividad, Residente en los municipios San Miguel, Guanabacoa, Regla o Habana del Este (Alarmar), Apto físico y psíquico. Interesados comunicarse por whatsapp al TELÉFONO: 52866842. O presentarse personalmente en la DIRECCIÓN: Calle 11 No.511 entre D y E, Vedado, Plaza de la Revolución, La Habana. Cuba.'
         },
         {
             id: '#19',
-            descripcion: 'Se busca trabajador para un carro de ventas de Hot Dog, en el Vedado.',
-            movil: '+5352427152'
+            info: 'Busco persona que me limpie y a veces cocine, mi apartamento es pequeño de un cuarto en centro habana y tengo un cachorrito. Contacto: +5353450942.'
         },
         {
             id: '#20',
-            descripcion: 'Busco una persona con experiencia en trabajar con pladur (poli espuma) en confección de techos y paredes (Buena paga).',
-            movil: '+5352929946'
+            info: 'La Empresa de Fuentes Renovables de Energía, pone a disposición ofertas laborales para profesionales de: Graduados de Nivel Superior: Especialista B en Gestión de la Calidad. Lunes a Viernes de 8:00 am a 5:30 pm. El salario a percibir 7 mil, se le suman otros sistemas de pagos adicionales: 1- Mensual: Pago del Decreto 53. + 8 mil cup, Pago del Coeficiente de Participación Laboral (CPL). Total: 15 mil en el mes. 2-Trimestral: Pago de las Utilidades. Posibilidades de aumento. 3-Módulo mensual (Arroz, chícharo, azúcar y aseo). Los interesados pueden contactar con Móvil: 52133930, Correo: meilyn@emfre.une.cu, Dirección: Calle Balear #17147 entre Callejón Troya y Calzada Vieja de Guanabacoa. San Miguel del Padrón. Contactos adicionales: +53 5 2592235, +5352131926.'
         },
         {
             id: '#21',
-            descripcion: 'Busco dependiente mujer mayor de 20 años para punto de venta en la Calzada del Cerro, muy cerca del hospital La Covadonga. Salario de 1000 cup',
-            movil: '+5354634604'
+            info: 'Somos una empresa extranjera con sucursal radicada en Playa dedicada a las tecnologías de la comunicación. Estamos en busca de contratar personal. Plazas disponibles: Ingeniero en telecomunicaciones. Requisitos obligatorios: Dominar el idioma inglés, tener completado el servicio social, buena presencia, experiencia demostrable. Ventajas: Salarios competitivos, transporte, buenas condiciones laborales, oportunidad de crecimiento, todos los materiales de trabajo necesarios, contrato laboral fijo. Si cumples con los requisitos y estás interesado, favor de contactar al 52112295, Flavia, y enviar CV en inglés. Muchas gracias!'
         },
         {
             id: '#22',
-            descripcion: 'Se busca cocinero. Requisitos: experiencia en el medio de la cocina, buen porte y aspecto.',
-            movil: '+5350733383'
+            info: 'Restaurante en Habana Vieja busca personal para limpieza y fregado. Solo para mujeres que vivan en La Habana Vieja. El trabajador debe hacer ambas funciones (limpieza y fregado). Horario de 7 a 10 pm frecuencia 2x2. Salario 1600 x día de trabajo. Frecuencia 2x2. No escribir personal que no viva en La Habana Vieja. No escribir hombres. Contacto: 56701431 WhatsApp. Mario.'
         },
         {
             id: '#23',
-            descripcion: 'Únete al equipo de la primera Residencia Senior en Cuba. Estamos contratando Custodios. Requisitos: residir en el Vedado, tener Licencia de Motos - Vedado.',
-            movil: '+5350982722'
+            info: 'Restaurante Locos x Cuba. Ubicado en San Lázaro entre Basarrate y Mazón. Solicita Dependienta de salón. Turnos 2x2. Salario: 2000 a 5000 cup diario. Horario de 8:30 a 11 pm. Requisitos: Dominar trabajo en salón, Buen porte y aspecto, Decente, educada, Muchos deseos de trabajar. Enviar Currículum, redes sociales y esperar para entrevista. Escribir al 55110957. Administrador Daniel.'
         },
         {
             id: '#24',
-            descripcion: 'Necesitamos una Dependienta de Cocina. Requisitos: excelente presencia y atención al cliente, disposición y agilidad en cocina, trabajo en equipo y proactividad, residir relativamente cerca.',
-            movil: '+5353057427'
+            info: 'SE CONTRATA AYUDANTE DE GRÁFICA / MANUALIDADES / PAPELERÍA. Para nuestra empresa especializada en Servicios Gráficos / Imprenta / Producción de Empaques / Diseño Gráfico. BENEFICIOS: Formación y capacitación, Salario fijo (con posibilidad de estimulación), Local climatizado, comodidad y estabilidad laboral. Modalidad de trabajo presencial. Horario: 9:00 am – 5:00 pm. Ubicación: Miramar, Playa. Descripción de la Plaza: Confecciones gráficas variadas (Bolsas, Papelería, Jarras, Tarjetas, Sublimación), además de limpieza y organización de equipos y maquinaria. REQUISITOS: Edad mínima indispensable: 20 años, Preferiblemente residente en Playa o municipios aledaños. (NO SE REQUIERE DE EXPERIENCIA PREVIA). Los interesados contacten al siguiente número: +53 53877323.'
         },
         {
             id: '#25',
-            descripcion: 'Buscamos Mensajero. Si tienes experiencia o disposición.',
-            movil: '+5363089446'
+            info: 'Se busca cocinero con experiencia para Restaurante en Marianao. Salario fijo de 2500 más porciento de las utilidades. Turnos 2x2 de 9am a 10pm. Traer currículum. Solo personas serias y con experiencia probada. Dirección calle 31 e/ 76 y 74. Contacto: +53 5 3447354.'
         },
         {
             id: '#26',
-            descripcion: 'Grupo Kronos SURL convoca plaza de Ejecutor Auxiliar o Jefe de Brigada. Amplia experiencia en ejecución de obras. Buen salario vinculado a las obras. Contacto: Ian, Director de Capital Humano. Inmobiliaria Jardines de 5ta Avenida, Playa.',
-            movil: '+5352117814'
+            info: 'Se busca un trabajador (hombre) entre 25 y 35 años con buena presencia, experiencia en atención al cliente, Manejo del tablet, disciplinado y trabajador. Que viva en centro Habana o cerca pues la puntualidad es importante. Ojo, no llamar, solo escribir por Whatsapp con breve descripción de experiencia. Contacto: +53 5 4742345.'
         },
         {
             id: '#27',
-            descripcion: 'Busco dependiente para cafetería en Nuevo Vedado que pueda empezar mañana mismo. Se trabaja 2x2, se paga el 10% de la venta o salario mínimo 1000.',
-            movil: '+5355109628'
-        },
-        {
-            id: '#28',
-            descripcion: 'Se solicita manicuri-pedicuri. Disponibilidad de trabajar de martes a sábado. Conocimiento de las técnicas, diseño a mano alzada, disponibilidad de horario.',
-            movil: '+5352396205'
-        },
-        {
-            id: '#29',
-            descripcion: 'Se buscan trabajadores para pizzería. Plaza: Dependiente/Cajera. Requisitos: Vivir cerca (inmediaciones de Mulgoba y Santiago de las Vegas). El negocio está situado en Mulgoba, por la Calle de Los Pinos.',
-            movil: '+5352508479'
-        },
-        {
-            id: '#30',
-            descripcion: 'Se necesita custodio para un edificio de pocas viviendas. De 8:00am a 8:00pm. Requisitos: Tener Nivel medio de escolaridad, Ser Menor de 60 años, Residir en Plaza de la Revolución. Escribir, NO LLAMAR.',
-            movil: '+5353457685'
-        },
-        {
-            id: '#31',
-            descripcion: 'Buscamos sonidistas con experiencia para trabajar en la casa de la música de Miramar.',
-            movil: '+5352935216'
-        },
-        {
-            id: '#32',
-            descripcion: 'Se necesita dependiente, turnos de 24 horas, con conocimiento de axispo y pleno dominio de IPV. Punto de referencia la Esquina de Tejas, municipio 10 de octubre. Solo mujeres.',
-            movil: '+5354491548'
+            info: 'Se necesita pizzero para una cafetería en la Habana Vieja. Horario de 7 a 7. Frecuencia 2x2. Escribir al WhatsApp 53055343.'
         }
     ];
+
+    if (!Array.isArray(window.jobOffers)) {
+        console.error('Error crítico: La lista de ofertas no se cargó como un array.');
+    }
 })();

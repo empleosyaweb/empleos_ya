@@ -1,8 +1,8 @@
 (function () {
     'use strict';
-    const STORAGE_KEY = 'empleosya_access_granted';
+    const STORAGE_KEY = 'empleosya_access_granted_v2';
     const OFFER_MAX_CHARS = 1500;
-    const SESSION_TIMEOUT = 3600000; // 1 hora
+    const SESSION_TIMEOUT = 3600000;
     let sessionStartTime = null;
 
     function escapeHtml(text) {
@@ -16,22 +16,12 @@
         return text.replace(/[&<>"']/g, m => map[m]);
     }
 
-    /**
-     * Valida el código de acceso contra la lista global.
-     * Mejora: Limpieza de espacios y normalización a mayúsculas para evitar errores de usuario.
-     */
     function validateAccessCode(code) {
-        if (!code || typeof code !== 'string') return false;
-        const cleanCode = code.trim().toUpperCase();
-        if (cleanCode.length > 20) return false;
-        
-        // Verifica si la lista de códigos existe
-        if (!window.accessCodes || !Array.isArray(window.accessCodes)) {
-            console.error('Error: La lista de códigos de acceso no está cargada.');
-            return false;
-        }
-        
-        return window.accessCodes.includes(cleanCode);
+        if (!window.validateAccessCode) return false;
+        const result = window.validateAccessCode(code);
+        if (result.valid) return true;
+        window._accessError = result;
+        return false;
     }
 
     function checkSessionTimeout() {
@@ -53,8 +43,8 @@
         general: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`
     };
 
-    function getJobIcon(desc) {
-        const lower = desc.toLowerCase();
+    function getJobIcon(info) {
+        const lower = info.toLowerCase();
         if (/cocin|pizz|ayudante de cocina|gastronom/i.test(lower)) return JOB_ICONS.cocina;
         if (/dependient|vendedor|gestor comercial|promotor|clientes/i.test(lower)) return JOB_ICONS.ventas;
         if (/ingenier|informát|sistema|redes|web|tecnolog/i.test(lower)) return JOB_ICONS.tecnologia;
@@ -63,33 +53,17 @@
         return JOB_ICONS.general;
     }
 
-    function cleanPhone(phone) {
-        if (!phone || typeof phone !== 'string') return '';
-        return phone.replace(/[^\d+]/g, '');
-    }
-
     function renderCard(offer) {
-        if (!offer.movil || !offer.descripcion) return '';
+        if (!offer.info) return '';
         const id = offer.id || `#${window.jobOffers.indexOf(offer) + 1}`;
-        const clean = cleanPhone(offer.movil);
-        const smsBody = 'Hola le contacto por la plataforma EMPLEOS_YA y me interesó su oferta laboral.';
-        const smsHref = `sms:${clean}?body=${encodeURIComponent(smsBody)}`;
-        const jobIcon = getJobIcon(offer.descripcion);
-        const desc = escapeHtml(offer.descripcion);
+        const jobIcon = getJobIcon(offer.info);
+        const desc = escapeHtml(offer.info);
         return `
             <div class="job-card" data-id="${escapeHtml(String(id))}">
                 <span class="job-id-badge">${escapeHtml(String(id))}</span>
                 <div class="job-icon">${jobIcon}</div>
                 <h3>Oferta Laboral</h3>
                 <p class="job-desc">${desc}</p>
-                <div class="contact-wrapper">
-                    <a href="${smsHref}" class="contact-btn" title="Contactar por SMS">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/>
-                        </svg>
-                        Contactar por SMS
-                    </a>
-                </div>
             </div>`;
     }
 
@@ -114,50 +88,34 @@
     }
 
     function injectJobSchema() {
-        if (!window.jobOffers) return;
+        if (!window.jobOffers || !Array.isArray(window.jobOffers)) return;
         const existingSchema = document.getElementById('dynamic-job-schema');
         if (existingSchema) existingSchema.remove();
-
         const schema = {
             "@context": "https://schema.org",
             "@type": "ItemList",
-            "name": "Bolsa de Trabajo Activa - Empleos Ya",
-            "description": "Lista de vacantes laborales actualizadas en Cuba.",
-            "itemListElement": window.jobOffers.slice(0, 20).map((offer, index) => ({
+            "itemListElement": window.jobOffers.slice(0, 10).map((offer, index) => ({
                 "@type": "ListItem",
                 "position": index + 1,
                 "item": {
                     "@type": "JobPosting",
-                    "title": offer.descripcion.split('.')[0].substring(0, 60) || "Oferta Laboral",
-                    "description": offer.descripcion,
-                    "datePosted": "2026-04-29",
-                    "validThrough": "2026-05-29",
-                    "employmentType": "FULL_TIME",
+                    "title": "Oferta Laboral",
+                    "description": offer.info,
+                    "datePosted": "2026-05-02",
                     "hiringOrganization": {
                         "@type": "Organization",
-                        "name": "Empleos Ya",
-                        "sameAs": "https://t.me/EMPLEOS_YA"
+                        "name": "Empleos Ya"
                     },
                     "jobLocation": {
                         "@type": "Place",
                         "address": {
                             "@type": "PostalAddress",
-                            "addressCountry": "CU",
-                            "addressRegion": "La Habana"
-                        }
-                    },
-                    "baseSalary": {
-                        "@type": "MonetaryAmount",
-                        "currency": "CUP",
-                        "value": {
-                            "@type": "QuantitativeValue",
-                            "unitText": "MONTH"
+                            "addressCountry": "CU"
                         }
                     }
                 }
             }))
         };
-
         const script = document.createElement('script');
         script.id = 'dynamic-job-schema';
         script.type = 'application/ld+json';
@@ -167,7 +125,7 @@
 
     function renderJobs() {
         const container = document.getElementById('jobs-container');
-        if (!container || !window.jobOffers) return;
+        if (!container || !window.jobOffers || !Array.isArray(window.jobOffers)) return;
         container.innerHTML = window.jobOffers.map(renderCard).join('');
         injectJobSchema();
         requestAnimationFrame(() => {
@@ -189,31 +147,6 @@
                 btn.appendChild(ripple);
                 ripple.addEventListener('animationend', () => ripple.remove());
             });
-        });
-    }
-
-    function setupHeaderDropdown() {
-        const toggle = document.getElementById('dropdownToggle');
-        const menu = document.getElementById('dropdownMenu');
-        if (!toggle || !menu) return;
-        toggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isOpen = menu.classList.contains('open');
-            menu.classList.toggle('open');
-            toggle.setAttribute('aria-expanded', !isOpen);
-        });
-        document.addEventListener('click', (e) => {
-            if (!toggle.contains(e.target) && !menu.contains(e.target)) {
-                menu.classList.remove('open');
-                toggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && menu.classList.contains('open')) {
-                menu.classList.remove('open');
-                toggle.setAttribute('aria-expanded', 'false');
-                toggle.focus();
-            }
         });
     }
 
@@ -320,10 +253,6 @@
         });
     }
 
-    /**
-     * Inicializa la barrera de acceso.
-     * Mejora: Limpieza de errores al escribir y soporte para tecla Enter.
-     */
     function initAccessGate() {
         const overlay = document.getElementById('access-gate');
         const appContent = document.getElementById('app-content');
@@ -332,7 +261,6 @@
         const errorMsg = document.getElementById('access-error');
         if (!overlay || !appContent) return;
 
-        // Verificar sesión persistente
         if (sessionStorage.getItem(STORAGE_KEY) === 'true') {
             sessionStartTime = Date.now();
             overlay.style.display = 'none';
@@ -344,7 +272,6 @@
         overlay.style.display = 'flex';
         appContent.style.display = 'none';
 
-        // Ocultar mensaje de error cuando el usuario empieza a escribir de nuevo
         input.addEventListener('input', () => {
             errorMsg.style.display = 'none';
         });
@@ -359,9 +286,11 @@
                 appContent.style.display = 'block';
                 setupApp();
             } else {
+                const errorResult = window._accessError || {};
+                errorMsg.textContent = errorResult.message || 'Código incorrecto. Intenta de nuevo.';
                 errorMsg.style.display = 'block';
                 input.classList.add('shake');
-                input.value = ''; // Limpiar campo para nuevo intento
+                input.value = '';
                 input.focus();
                 setTimeout(() => input.classList.remove('shake'), 500);
             }
@@ -369,7 +298,6 @@
     }
 
     function setupApp() {
-        setupHeaderDropdown();
         setupNavigation();
         setupGmailOfferForm();
         const initial = window.location.hash.slice(1) || 'inicio';
@@ -384,7 +312,6 @@
         setInterval(checkSessionTimeout, 60000);
     }
 
-    // Registro de Service Worker para PWA
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
