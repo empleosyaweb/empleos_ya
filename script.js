@@ -1,9 +1,61 @@
 (function () {
     'use strict';
-    const STORAGE_KEY = 'empleosya_access_granted_v2';
-    const OFFER_MAX_CHARS = 1500;
+
+    const ACCESS_CONFIG = {
+        code: '0102ABC',
+        validUntil: '2026-05-15'
+    };
+
+    const STORAGE_KEY = 'bolsadeempleo_access_granted_v3';
     const SESSION_TIMEOUT = 3600000;
+    const MAX_ATTEMPTS = 5;
+    const LOCKOUT_DURATION = 300000;
+
     let sessionStartTime = null;
+    let failedAttempts = 0;
+    let lockoutUntil = null;
+    let scrollObserver = null;
+    let sessionCheckInterval = null;
+
+    async function loadJobOffers() {
+        try {
+            const response = await fetch('work.xml');
+            if (!response.ok) throw new Error('Error al cargar work.xml');
+            const text = await response.text();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(text, 'application/xml');
+            const offerNodes = xml.querySelectorAll('offer');
+            const offers = Array.from(offerNodes).map(function (offer) {
+                const infoNode = offer.querySelector('info');
+                return {
+                    id: offer.getAttribute('id'),
+                    info: infoNode ? infoNode.textContent.trim() : ''
+                };
+            });
+            if (!offers.length) throw new Error('No se encontraron ofertas en work.xml');
+            window.jobOffers = offers;
+        } catch (err) {
+            window.jobOffers = [];
+        }
+    }
+
+    function validateAccessCode(input) {
+        if (!input || typeof input !== 'string') {
+            return { valid: false, expired: false, message: 'Código inválido.' };
+        }
+        const clean = input.trim().toUpperCase();
+        const expiryDate = new Date(ACCESS_CONFIG.validUntil + 'T23:59:59');
+        if (isNaN(expiryDate.getTime())) {
+            return { valid: false, expired: false, message: 'Error de configuración.' };
+        }
+        if (new Date() > expiryDate) {
+            return { valid: false, expired: true, message: 'El código de acceso ha expirado. Contacta al administrador.' };
+        }
+        if (clean !== ACCESS_CONFIG.code.toUpperCase()) {
+            return { valid: false, expired: false, message: 'Código incorrecto. Intenta de nuevo.' };
+        }
+        return { valid: true, expired: false, message: '' };
+    }
 
     function escapeHtml(text) {
         const map = {
@@ -13,34 +65,50 @@
             '"': '&quot;',
             "'": '&#39;'
         };
-        return text.replace(/[&<>"']/g, m => map[m]);
-    }
-
-    function validateAccessCode(code) {
-        if (!window.validateAccessCode) return false;
-        const result = window.validateAccessCode(code);
-        if (result.valid) return true;
-        window._accessError = result;
-        return false;
+        return String(text).replace(/[&<>"']/g, function (m) { return map[m]; });
     }
 
     function checkSessionTimeout() {
         if (!sessionStartTime) return false;
         if (Date.now() - sessionStartTime > SESSION_TIMEOUT) {
-            sessionStorage.removeItem(STORAGE_KEY);
-            location.reload();
+            destroySession();
             return true;
         }
         return false;
     }
 
+    function destroySession() {
+        sessionStorage.removeItem(STORAGE_KEY);
+        if (sessionCheckInterval) {
+            clearInterval(sessionCheckInterval);
+            sessionCheckInterval = null;
+        }
+        location.reload();
+    }
+
+    function isLockedOut() {
+        if (lockoutUntil && Date.now() < lockoutUntil) {
+            return true;
+        }
+        if (lockoutUntil && Date.now() >= lockoutUntil) {
+            lockoutUntil = null;
+            failedAttempts = 0;
+        }
+        return false;
+    }
+
+    function getLockoutRemaining() {
+        if (!lockoutUntil) return 0;
+        return Math.max(0, Math.ceil((lockoutUntil - Date.now()) / 1000));
+    }
+
     const JOB_ICONS = {
-        cocina: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 13V21M18 13V21M6 13L10 3H14L18 13M6 13H18"/><circle cx="8" cy="9" r="1.5"/><circle cx="16" cy="9" r="1.5"/></svg>`,
-        ventas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><circle cx="12" cy="14" r="2"/></svg>`,
-        tecnologia: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
-        construccion: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.7-3.7a1 1 0 000-1.4L19.8 2.8a1 1 0 00-1.4 0l-3.7 3.7z"/><path d="M2 22l20-20M14 22l8-8M2 2l8 8"/></svg>`,
-        oficina: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="9" y1="12" x2="15" y2="12"/></svg>`,
-        general: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`
+        cocina: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 13V21M18 13V21M6 13L10 3H14L18 13M6 13H18"/><circle cx="8" cy="9" r="1.5"/><circle cx="16" cy="9" r="1.5"/></svg>',
+        ventas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><circle cx="12" cy="14" r="2"/></svg>',
+        tecnologia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+        construccion: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.7-3.7a1 1 0 000-1.4L19.8 2.8a1 1 0 00-1.4 0l-3.7 3.7z"/><path d="M2 22l20-20M14 22l8-8M2 2l8 8"/></svg>',
+        oficina: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="9" y1="12" x2="15" y2="12"/></svg>',
+        general: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>'
     };
 
     function getJobIcon(info) {
@@ -55,269 +123,148 @@
 
     function renderCard(offer) {
         if (!offer.info) return '';
-        const id = offer.id || `#${window.jobOffers.indexOf(offer) + 1}`;
+        const id = offer.id;
         const jobIcon = getJobIcon(offer.info);
-        const desc = escapeHtml(offer.info);
-        return `
-            <div class="job-card" data-id="${escapeHtml(String(id))}">
-                <span class="job-id-badge">${escapeHtml(String(id))}</span>
-                <div class="job-icon">${jobIcon}</div>
-                <h3>Oferta Laboral</h3>
-                <p class="job-desc">${desc}</p>
-            </div>`;
+        let desc = offer.info
+            .replace(/<phone>/g, '\x00START\x00')
+            .replace(/<\/phone>/g, '\x00END\x00');
+        desc = escapeHtml(desc);
+        desc = desc.replace(/\0START\0/g, '<span class="phone">').replace(/\0END\0/g, '</span>');
+        return '<div class="job-card" data-id="' + escapeHtml(String(id)) + '">' +
+            '<span class="job-id-badge">' + escapeHtml(String(id)) + '</span>' +
+            '<div class="job-icon">' + jobIcon + '</div>' +
+            '<h3>Oferta Laboral</h3>' +
+            '<p class="job-desc">' + desc + '</p>' +
+            '</div>';
     }
 
     function setupScrollAnimations() {
         const cards = document.querySelectorAll('.job-card');
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
-            cards.forEach((card, i) => {
-                card.style.transitionDelay = `${i * 0.04}s`;
-                observer.observe(card);
-            });
-        } else {
-            cards.forEach(card => card.classList.add('visible'));
+        if (!('IntersectionObserver' in window)) {
+            cards.forEach(function (card) { card.classList.add('visible'); });
+            return;
         }
-    }
-
-    function injectJobSchema() {
-        if (!window.jobOffers || !Array.isArray(window.jobOffers)) return;
-        const existingSchema = document.getElementById('dynamic-job-schema');
-        if (existingSchema) existingSchema.remove();
-        const schema = {
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            "itemListElement": window.jobOffers.slice(0, 10).map((offer, index) => ({
-                "@type": "ListItem",
-                "position": index + 1,
-                "item": {
-                    "@type": "JobPosting",
-                    "title": "Oferta Laboral",
-                    "description": offer.info,
-                    "datePosted": "2026-05-02",
-                    "hiringOrganization": {
-                        "@type": "Organization",
-                        "name": "Empleos Ya"
-                    },
-                    "jobLocation": {
-                        "@type": "Place",
-                        "address": {
-                            "@type": "PostalAddress",
-                            "addressCountry": "CU"
-                        }
-                    }
+        if (scrollObserver) scrollObserver.disconnect();
+        scrollObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    scrollObserver.unobserve(entry.target);
                 }
-            }))
-        };
-        const script = document.createElement('script');
-        script.id = 'dynamic-job-schema';
-        script.type = 'application/ld+json';
-        script.text = JSON.stringify(schema);
-        document.head.appendChild(script);
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        cards.forEach(function (card, i) {
+            card.style.transitionDelay = (i * 0.03) + 's';
+            scrollObserver.observe(card);
+        });
     }
 
     function renderJobs() {
         const container = document.getElementById('jobs-container');
         if (!container || !window.jobOffers || !Array.isArray(window.jobOffers)) return;
         container.innerHTML = window.jobOffers.map(renderCard).join('');
-        injectJobSchema();
-        requestAnimationFrame(() => {
+        requestAnimationFrame(function () {
             setupScrollAnimations();
-            addRippleEffect();
         });
     }
 
-    function addRippleEffect() {
-        document.querySelectorAll('.btn-primary, .contact-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                ripple.className = 'ripple';
-                const rect = btn.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                ripple.style.width = ripple.style.height = `${size}px`;
-                ripple.style.left = `${e.clientX - rect.left - size/2}px`;
-                ripple.style.top = `${e.clientY - rect.top - size/2}px`;
-                btn.appendChild(ripple);
-                ripple.addEventListener('animationend', () => ripple.remove());
-            });
-        });
+    function startSessionMonitor() {
+        if (sessionCheckInterval) clearInterval(sessionCheckInterval);
+        sessionCheckInterval = setInterval(checkSessionTimeout, 60000);
     }
 
-    function setupGmailOfferForm() {
-        const form = document.getElementById('gmail-offer-form');
-        const companyInput = document.getElementById('offer-company');
-        const positionInput = document.getElementById('offer-position');
-        const recipientInput = document.getElementById('offer-recipient');
-        const descriptionInput = document.getElementById('offer-description');
-        const counter = document.getElementById('offer-char-counter');
-        const status = document.getElementById('offer-form-status');
-        if (!form || !descriptionInput || !counter || !status || form.dataset.gmailReady === 'true') return;
-        form.dataset.gmailReady = 'true';
-
-        function updateCounter() {
-            const length = descriptionInput.value.length;
-            counter.textContent = `${length}/${OFFER_MAX_CHARS} caracteres`;
-            counter.classList.toggle('limit-warning', length > OFFER_MAX_CHARS * 0.9 && length <= OFFER_MAX_CHARS);
-            counter.classList.toggle('limit-error', length > OFFER_MAX_CHARS);
-        }
-
-        function showStatus(message, type) {
-            status.textContent = message;
-            status.className = type ? `form-status ${type}` : 'form-status';
-        }
-
-        descriptionInput.addEventListener('input', updateCounter);
-        updateCounter();
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const company = companyInput.value.trim();
-            const position = positionInput.value.trim();
-            const recipient = recipientInput.value.trim();
-            const description = descriptionInput.value.trim();
-
-            if (!company || !position || !description) {
-                showStatus('Completa empresa, cargo y descripción antes de enviar.', 'error');
-                return;
-            }
-            if (description.length > OFFER_MAX_CHARS) {
-                showStatus(`La descripción supera el límite de ${OFFER_MAX_CHARS} caracteres.`, 'error');
-                descriptionInput.focus();
-                return;
-            }
-            if (recipient && !recipientInput.checkValidity()) {
-                showStatus('Ingresa un correo válido o deja el destinatario vacío.', 'error');
-                recipientInput.focus();
-                return;
-            }
-
-            const subject = `Nueva oferta de empleo: ${company} - ${position}`;
-            const body = [
-                'Hola, comparto una nueva oferta laboral para EMPLEOS YA.',
-                '',
-                `Empresa o contacto: ${company}`,
-                `Puesto o cargo: ${position}`,
-                '',
-                'Descripción:',
-                description,
-                '',
-                'Enviado desde la plataforma EMPLEOS YA.'
-            ].join('\n');
-            const gmailUrl = new URL('https://mail.google.com/mail/');
-            gmailUrl.searchParams.set('view', 'cm');
-            gmailUrl.searchParams.set('fs', '1');
-            if (recipient) gmailUrl.searchParams.set('to', encodeURIComponent(recipient));
-            gmailUrl.searchParams.set('su', encodeURIComponent(subject));
-            gmailUrl.searchParams.set('body', encodeURIComponent(body));
-            window.open(gmailUrl.toString(), '_blank', 'noopener,noreferrer');
-            showStatus('Gmail se abrió en una nueva pestaña con la oferta preparada.', 'success');
-        });
+    function setupApp() {
+        const section = document.getElementById('vacantes');
+        if (section) section.classList.add('active');
+        renderJobs();
     }
 
-    function setupNavigation() {
-        const sections = document.querySelectorAll('.page-section');
-        const links = document.querySelectorAll('.nav-link');
-        const cta = document.getElementById('verVacantesBtn');
-        function showSection(id) {
-            sections.forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(id);
-            if (target) target.classList.add('active');
-            links.forEach(l => {
-                l.classList.remove('active');
-                if (l.dataset.section === id) l.classList.add('active');
-            });
-            if (id === 'vacantes') renderJobs();
-            if (id === 'enviar-oferta') setupGmailOfferForm();
-        }
-        links.forEach(l => l.addEventListener('click', e => {
-            e.preventDefault();
-            showSection(l.dataset.section);
-            history.replaceState(null, '', `#${l.dataset.section}`);
-        }));
-        if (cta) {
-            cta.addEventListener('click', () => {
-                showSection('vacantes');
-                history.pushState(null, '', '#vacantes');
-            });
-        }
-        window.addEventListener('hashchange', () => {
-            const hash = window.location.hash.slice(1) || 'inicio';
-            if (document.getElementById(hash)) showSection(hash);
-        });
-    }
-
-    function initAccessGate() {
+    async function initAccessGate() {
         const overlay = document.getElementById('access-gate');
         const appContent = document.getElementById('app-content');
         const form = document.getElementById('access-form');
         const input = document.getElementById('access-code');
         const errorMsg = document.getElementById('access-error');
+
         if (!overlay || !appContent) return;
+
+        await loadJobOffers();
 
         if (sessionStorage.getItem(STORAGE_KEY) === 'true') {
             sessionStartTime = Date.now();
             overlay.style.display = 'none';
-            appContent.style.display = 'block';
+            appContent.style.display = 'flex';
+            appContent.style.flexDirection = 'column';
+            appContent.style.minHeight = '100vh';
             setupApp();
+            startSessionMonitor();
             return;
         }
 
         overlay.style.display = 'flex';
         appContent.style.display = 'none';
 
-        input.addEventListener('input', () => {
+        input.addEventListener('input', function () {
             errorMsg.style.display = 'none';
         });
 
-        form.addEventListener('submit', function (e) {
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                input.value = '';
+                errorMsg.style.display = 'none';
+            }
+        });
+
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
+
+            if (isLockedOut()) {
+                const remaining = getLockoutRemaining();
+                const mins = Math.ceil(remaining / 60);
+                errorMsg.textContent = 'Demasiados intentos. Espera ' + mins + ' minuto(s) para intentar de nuevo.';
+                errorMsg.style.display = 'block';
+                input.classList.add('shake');
+                setTimeout(function () { input.classList.remove('shake'); }, 500);
+                return;
+            }
+
             const code = input.value;
-            if (validateAccessCode(code)) {
+            const result = validateAccessCode(code);
+
+            if (result.valid) {
+                failedAttempts = 0;
+                lockoutUntil = null;
                 sessionStartTime = Date.now();
                 sessionStorage.setItem(STORAGE_KEY, 'true');
                 overlay.style.display = 'none';
-                appContent.style.display = 'block';
+                appContent.style.display = 'flex';
+                appContent.style.flexDirection = 'column';
+                appContent.style.minHeight = '100vh';
+                input.value = '';
+                errorMsg.style.display = 'none';
                 setupApp();
+                startSessionMonitor();
             } else {
-                const errorResult = window._accessError || {};
-                errorMsg.textContent = errorResult.message || 'Código incorrecto. Intenta de nuevo.';
+                failedAttempts++;
+                if (failedAttempts >= MAX_ATTEMPTS) {
+                    lockoutUntil = Date.now() + LOCKOUT_DURATION;
+                    failedAttempts = 0;
+                    errorMsg.textContent = 'Demasiados intentos fallidos. Cuenta bloqueada por 5 minutos.';
+                } else if (result.expired) {
+                    errorMsg.textContent = result.message;
+                } else {
+                    const remaining = MAX_ATTEMPTS - failedAttempts;
+                    errorMsg.textContent = result.message + ' (' + remaining + ' intento(s) restante(s))';
+                }
                 errorMsg.style.display = 'block';
                 input.classList.add('shake');
                 input.value = '';
                 input.focus();
-                setTimeout(() => input.classList.remove('shake'), 500);
+                setTimeout(function () { input.classList.remove('shake'); }, 500);
             }
         });
-    }
 
-    function setupApp() {
-        setupNavigation();
-        setupGmailOfferForm();
-        const initial = window.location.hash.slice(1) || 'inicio';
-        if (document.getElementById(initial)) {
-            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(initial).classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(l => {
-                l.classList.toggle('active', l.dataset.section === initial);
-            });
-            if (initial === 'vacantes') renderJobs();
-        }
-        setInterval(checkSessionTimeout, 60000);
-    }
-
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Service Worker registrado:', reg.scope))
-                .catch(err => console.log('Fallo registro Service Worker:', err));
-        });
+        input.focus();
     }
 
     if (document.readyState === 'loading') {
