@@ -2,7 +2,6 @@
     --primary: #0b0f19;
     --accent: #4f46e5;
     --accent-hover: #4338ca;
-    --accent-glow: rgba(79, 70, 229, 0.25);
     --accent-soft: #eef2ff;
     --bg: #f4f6fb;
     --surface: #ffffff;
@@ -11,14 +10,10 @@
     --text-light: #94a3b8;
     --border: #e2e6ed;
     --border-focus: #4f46e5;
-    --shadow-sm: 0 2px 6px rgba(0,0,0,0.04);
-    --shadow-md: 0 8px 18px rgba(0,0,0,0.06);
-    --shadow-lg: 0 12px 28px rgba(0,0,0,0.08);
-    --radius: 0.75rem;
-    --radius-lg: 1rem;
+    --radius: 0.4rem;
+    --radius-lg: 0.5rem;
     --radius-full: 9999px;
-    --font: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --transition: 0.2s ease;
+    --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 *, *::before, *::after {
@@ -38,15 +33,12 @@ body {
     color: var(--text-main);
     line-height: 1.5;
     min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
 }
 
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(11, 15, 25, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(11, 15, 25, 0.85);
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -61,15 +53,14 @@ body {
     max-width: 420px;
     width: 100%;
     text-align: center;
-    box-shadow: var(--shadow-lg);
-    animation: fadeInUp 0.5s ease;
+    border: 1px solid var(--border);
 }
 
 .overlay-icon {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     margin: 0 auto 1.25rem;
-    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    background: var(--accent-soft);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -78,8 +69,8 @@ body {
 }
 
 .overlay-icon svg {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
 }
 
 .overlay-card h2 {
@@ -109,67 +100,50 @@ body {
 
 .input-icon {
     position: absolute;
-    left: 1rem;
+    left: 0.8rem;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-light);
     display: flex;
     align-items: center;
     pointer-events: none;
-    transition: color var(--transition);
 }
 
 .input-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 }
 
 #access-code {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    padding: 0.7rem 1rem 0.7rem 2.5rem;
     border: 2px solid var(--border);
     border-radius: var(--radius);
     font-size: 0.95rem;
-    text-align: left;
     outline: none;
     letter-spacing: 0.05em;
-    transition: border-color var(--transition), box-shadow var(--transition);
     background: #fafbfc;
 }
 
 #access-code:focus {
     border-color: var(--border-focus);
-    box-shadow: 0 0 0 4px var(--accent-glow);
     background: #fff;
-}
-
-#access-code:focus ~ .input-icon,
-.input-wrapper:focus-within .input-icon {
-    color: var(--accent);
 }
 
 #access-form button {
     background: var(--accent);
     color: #fff;
     border: none;
-    padding: 0.75rem 2rem;
+    padding: 0.7rem 2rem;
     border-radius: var(--radius-full);
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
     width: 100%;
-    box-shadow: 0 4px 14px var(--accent-glow);
-    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 #access-form button:hover {
     background: var(--accent-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
-}
-
-#access-form button:active {
-    transform: translateY(0);
 }
 
 .error-msg {
@@ -184,9 +158,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 40;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: var(--surface);
     border-bottom: 1px solid var(--border);
     padding: 0.6rem 1.25rem;
 }
@@ -208,8 +180,8 @@ body {
 }
 
 .logo-icon {
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     background: var(--accent);
     border-radius: var(--radius);
     display: flex;
@@ -220,14 +192,13 @@ body {
 }
 
 .logo-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 }
 
 .logo-text {
     font-weight: 700;
-    font-size: 1.05rem;
-    letter-spacing: -0.01em;
+    font-size: 1rem;
 }
 
 main {
@@ -244,12 +215,6 @@ main {
 
 .page-section.active {
     display: block;
-    animation: fadeInUp 0.4s ease;
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .section-header {
@@ -260,8 +225,8 @@ main {
 }
 
 .section-icon {
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     color: var(--accent);
     flex-shrink: 0;
 }
@@ -280,7 +245,6 @@ main {
 .section-title {
     font-size: 1.35rem;
     font-weight: 700;
-    letter-spacing: -0.01em;
 }
 
 .section-subtitle {
@@ -299,26 +263,33 @@ main {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 1.1rem 1.2rem;
-    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    transition: box-shadow 0.25s ease, transform 0.25s ease, opacity 0.4s ease, translate 0.4s ease;
-    cursor: pointer;
     position: relative;
-    opacity: 0;
-    translate: 0 24px;
-}
-
-.job-card.visible {
-    opacity: 1;
-    translate: 0 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .job-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-3px);
-    border-color: #d0d5e0;
+    border-color: #c0c7d0;
+}
+
+.job-card * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.job-card .phone {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    cursor: text;
 }
 
 .job-id-badge {
@@ -334,8 +305,8 @@ main {
 }
 
 .job-icon {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     background: #f1f5f9;
     border-radius: var(--radius);
     display: flex;
@@ -346,8 +317,8 @@ main {
 }
 
 .job-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 }
 
 .job-card h3 {
@@ -368,20 +339,79 @@ main {
     color: var(--accent);
     background: var(--accent-soft);
     padding: 0.1em 0.3em;
-    border-radius: 4px;
+    border-radius: 3px;
     white-space: nowrap;
 }
 
-.shake {
-    animation: shake 0.5s ease-in-out;
+.main-footer {
+    text-align: center;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    margin-top: 1.5rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
 }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
+.main-footer strong {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.scroll-top-btn {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 50;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.scroll-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.scroll-top-btn:hover {
+    background: var(--accent-hover);
+}
+
+.scroll-top-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media print {
+    body * {
+        visibility: hidden !important;
+        background: white !important;
+    }
+    body::after {
+        visibility: visible !important;
+        content: "La impresion de esta pagina no esta permitida.";
+        display: block !important;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        color: #dc2626;
+        text-align: center;
+        font-family: sans-serif;
+        z-index: 99999;
+    }
 }
 
 @media (max-width: 768px) {
@@ -398,8 +428,8 @@ main {
         padding: 2rem 1.25rem;
     }
     .overlay-icon {
-        width: 52px;
-        height: 52px;
+        width: 48px;
+        height: 48px;
     }
     .overlay-card h2 {
         font-size: 1.2rem;
@@ -408,6 +438,6 @@ main {
         padding: 0.9rem 1rem;
     }
     .logo-text {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
 }

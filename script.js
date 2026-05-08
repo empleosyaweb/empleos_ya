@@ -14,7 +14,6 @@
     let sessionStartTime = null;
     let failedAttempts = 0;
     let lockoutUntil = null;
-    let scrollObserver = null;
     let sessionCheckInterval = null;
 
     async function loadJobOffers() {
@@ -138,34 +137,146 @@
             '</div>';
     }
 
-    function setupScrollAnimations() {
-        const cards = document.querySelectorAll('.job-card');
-        if (!('IntersectionObserver' in window)) {
-            cards.forEach(function (card) { card.classList.add('visible'); });
-            return;
-        }
-        if (scrollObserver) scrollObserver.disconnect();
-        scrollObserver = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    scrollObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-        cards.forEach(function (card, i) {
-            card.style.transitionDelay = (i * 0.03) + 's';
-            scrollObserver.observe(card);
-        });
-    }
-
     function renderJobs() {
         const container = document.getElementById('jobs-container');
         if (!container || !window.jobOffers || !Array.isArray(window.jobOffers)) return;
         container.innerHTML = window.jobOffers.map(renderCard).join('');
-        requestAnimationFrame(function () {
-            setupScrollAnimations();
+    }
+
+    function isSelectionInsidePhone() {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return false;
+        try {
+            const range = selection.getRangeAt(0);
+            let node = range.commonAncestorContainer;
+            if (node.nodeType === Node.TEXT_NODE) {
+                node = node.parentNode;
+            }
+            return !!(node && (node.classList.contains('phone') || node.closest('.phone')));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function handleCopyCut(e) {
+        if (!isSelectionInsidePhone()) {
+            e.preventDefault();
+            if (e.clipboardData) {
+                e.clipboardData.setData('text/plain', '');
+            }
+            return false;
+        }
+    }
+
+    function handleContextMenu(e) {
+        const target = e.target;
+        if (target.classList.contains('phone') || target.closest('.phone')) {
+            return true;
+        }
+        e.preventDefault();
+        return false;
+    }
+
+    function preventDrag(e) {
+        const target = e.target;
+        if (target.classList.contains('phone') || target.closest('.phone')) {
+            return true;
+        }
+        e.preventDefault();
+        return false;
+    }
+
+    function handleKeyDown(e) {
+        const key = e.key;
+        const ctrl = e.ctrlKey || e.metaKey;
+        const shift = e.shiftKey;
+
+        if (key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+        if (ctrl && (key === 's' || key === 'S')) {
+            e.preventDefault();
+            return false;
+        }
+        if (ctrl && (key === 'p' || key === 'P')) {
+            e.preventDefault();
+            return false;
+        }
+        if (ctrl && (key === 'u' || key === 'U')) {
+            e.preventDefault();
+            return false;
+        }
+        if (ctrl && shift && (key === 's' || key === 'S')) {
+            e.preventDefault();
+            return false;
+        }
+        if (ctrl && shift && (key === 'i' || key === 'I')) {
+            e.preventDefault();
+            return false;
+        }
+        if (ctrl && shift && (key === 'j' || key === 'J')) {
+            e.preventDefault();
+            return false;
+        }
+        if (ctrl && shift && (key === 'c' || key === 'C')) {
+            e.preventDefault();
+            return false;
+        }
+    }
+
+    function overridePrint() {
+        window.print = function () {
+            alert('La impresión de esta página no está permitida.');
+            return false;
+        };
+    }
+
+    function setupPrintBlocker() {
+        const printQuery = window.matchMedia('print');
+        if (printQuery.addEventListener) {
+            printQuery.addEventListener('change', function (e) {
+                if (e.matches) {
+                    setTimeout(function () {
+                        alert('La impresión de esta página no está permitida.');
+                    }, 10);
+                }
+            });
+        }
+    }
+
+    function setupSecurity() {
+        document.addEventListener('keydown', handleKeyDown, true);
+        document.addEventListener('copy', handleCopyCut);
+        document.addEventListener('cut', handleCopyCut);
+        document.addEventListener('dragstart', preventDrag);
+        document.addEventListener('contextmenu', handleContextMenu);
+        overridePrint();
+        setupPrintBlocker();
+    }
+
+    function setupScrollToTop() {
+        const btn = document.getElementById('scroll-top-btn');
+        if (!btn) return;
+
+        function toggleVisibility() {
+            const scrollBottom = window.innerHeight + window.scrollY;
+            const docHeight = document.documentElement.scrollHeight;
+            if (docHeight - scrollBottom <= 120) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        }
+
+        window.addEventListener('scroll', toggleVisibility, { passive: true });
+        window.addEventListener('resize', toggleVisibility, { passive: true });
+
+        btn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+
+        toggleVisibility();
     }
 
     function startSessionMonitor() {
@@ -177,6 +288,8 @@
         const section = document.getElementById('vacantes');
         if (section) section.classList.add('active');
         renderJobs();
+        setupSecurity();
+        setupScrollToTop();
     }
 
     async function initAccessGate() {
@@ -223,8 +336,6 @@
                 const mins = Math.ceil(remaining / 60);
                 errorMsg.textContent = 'Demasiados intentos. Espera ' + mins + ' minuto(s) para intentar de nuevo.';
                 errorMsg.style.display = 'block';
-                input.classList.add('shake');
-                setTimeout(function () { input.classList.remove('shake'); }, 500);
                 return;
             }
 
@@ -257,10 +368,8 @@
                     errorMsg.textContent = result.message + ' (' + remaining + ' intento(s) restante(s))';
                 }
                 errorMsg.style.display = 'block';
-                input.classList.add('shake');
                 input.value = '';
                 input.focus();
-                setTimeout(function () { input.classList.remove('shake'); }, 500);
             }
         });
 
