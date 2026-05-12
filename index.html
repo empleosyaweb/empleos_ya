@@ -3,80 +3,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bolsa De Empleo</title>
-    <meta name="description" content="Bolsa de empleo corporativo. Contacto directo con empleadores.">
-    <meta name="theme-color" content="#4f46e5">
+    <title>Cargando</title>
+
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://via.placeholder.com; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
+          content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #f5f6fa;
+            --bg-card: #ffffff;
+            --brand-blue: #1a56db;
+            --brand-blue-light: #3b82f6;
+            --brand-blue-pale: #e0ecff;
+            --accent-teal: #0d9488;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-subtle: #e2e8f0;
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+            --shadow-elevated: 0 12px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-image: radial-gradient(circle, #cbd5e1 0.5px, transparent 0.5px);
+            background-size: 28px 28px;
+            background-position: center;
+            padding: 16px;
+        }
+
+        .loading-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-elevated);
+            padding: 48px 44px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+            max-width: 420px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            animation: fadeInUp 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+        }
+
+        .loading-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg,
+                    var(--brand-blue) 0%,
+                    var(--brand-blue-light) 35%,
+                    var(--accent-teal) 70%,
+                    var(--brand-blue-light) 100%);
+            background-size: 200% 100%;
+            animation: shimmerBar 3s ease-in-out infinite;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes shimmerBar {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .spinner-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner-ring-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-full);
+            border: 4px solid transparent;
+            border-top-color: var(--brand-blue);
+            border-right-color: var(--brand-blue-light);
+            animation: spinClockwise 1s linear infinite;
+        }
+
+        .spinner-ring-middle {
+            position: absolute;
+            width: 74px;
+            height: 74px;
+            border-radius: var(--radius-full);
+            border: 3px solid transparent;
+            border-bottom-color: var(--accent-teal);
+            border-left-color: #5eead4;
+            animation: spinCounterClockwise 1.6s linear infinite;
+        }
+
+        .spinner-core {
+            position: absolute;
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-full);
+            background: var(--brand-blue-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulseCore 2s ease-in-out infinite;
+            box-shadow: 0 0 0 8px rgba(26, 86, 219, 0.06);
+        }
+
+        .spinner-core svg {
+            width: 22px;
+            height: 22px;
+            color: var(--brand-blue);
+            animation: subtleBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes spinClockwise {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spinCounterClockwise {
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
+        @keyframes pulseCore {
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 8px rgba(26, 86, 219, 0.06);
+            }
+            50% {
+                transform: scale(1.12);
+                box-shadow: 0 0 0 18px rgba(26, 86, 219, 0.0);
+            }
+        }
+
+        @keyframes subtleBounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-2px);
+            }
+            50% {
+                transform: translateY(0);
+            }
+            70% {
+                transform: translateY(-1px);
+            }
+        }
+
+        .loading-text-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .loading-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-align: center;
+            min-height: 1.4em;
+        }
+
+        .dots-animated {
+            display: inline-flex;
+            gap: 1px;
+            font-weight: 700;
+            color: var(--brand-blue);
+        }
+
+        .dots-animated span {
+            animation: dotBounce 1.4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        .dots-animated span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .dots-animated span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .dots-animated span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotBounce {
+            0%,
+            80%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.3;
+            }
+            40% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+
+        .loading-subtitle {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0.01em;
+            text-align: center;
+            max-width: 260px;
+            line-height: 1.4;
+            min-height: 1.4em;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            max-width: 280px;
+            height: 5px;
+            background: #e8ecf1;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            background: linear-gradient(90deg,
+                    var(--brand-blue) 0%,
+                    var(--brand-blue-light) 40%,
+                    #60a5fa 70%,
+                    var(--brand-blue-light) 100%);
+            background-size: 200% 100%;
+            animation: progressShimmer 2s ease-in-out infinite;
+            width: 0%;
+            transition: width 0.15s linear;
+        }
+
+        @keyframes progressShimmer {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .progress-percentage {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            font-variant-numeric: tabular-nums;
+            min-width: 2.5em;
+            text-align: center;
+        }
+
+        .step-indicators {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: var(--border-subtle);
+            transition: all var(--transition-smooth);
+        }
+
+        .step-dot.active {
+            background: var(--brand-blue);
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.15);
+        }
+
+        .step-dot.done {
+            background: var(--accent-teal);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .spinner-ring-outer,
+            .spinner-ring-middle,
+            .spinner-core,
+            .spinner-core svg,
+            .dots-animated span,
+            .progress-bar-fill,
+            .loading-container::before,
+            .loading-container {
+                animation-duration: 0s !important;
+                animation: none !important;
+                transition: none !important;
+            }
+            .progress-bar-fill {
+                width: 100% !important;
+                background-position: 0% 50%;
+            }
+            .step-dot {
+                transition: none !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .loading-container {
+                padding: 36px 24px 32px;
+                gap: 22px;
+                border-radius: 16px;
+            }
+            .loading-container::before {
+                border-radius: 16px 16px 0 0;
+                height: 3px;
+            }
+            .spinner-wrapper {
+                width: 80px;
+                height: 80px;
+            }
+            .spinner-ring-middle {
+                width: 58px;
+                height: 58px;
+            }
+            .spinner-core {
+                width: 34px;
+                height: 34px;
+            }
+            .spinner-core svg {
+                width: 18px;
+                height: 18px;
+            }
+            .loading-title {
+                font-size: 1rem;
+            }
+            .loading-subtitle {
+                font-size: 0.78rem;
+            }
+            .progress-bar-container {
+                max-width: 220px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="access-gate" class="overlay">
-        <div class="overlay-card">
-            <div class="overlay-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <rect x="3" y="11" width="18" height="11" rx="2" />
-                    <path d="M7 11V7a5 5 0 0110 0v4" />
+    <div class="loading-container" role="status" aria-live="polite" aria-label="Cargando, por favor espere">
+        <div class="spinner-wrapper">
+            <div class="spinner-ring-outer"></div>
+            <div class="spinner-ring-middle"></div>
+            <div class="spinner-core">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+                    <line x1="12" y1="12" x2="12" y2="16"></line>
+                    <line x1="9" y1="14" x2="15" y2="14"></line>
                 </svg>
             </div>
-            <h2>Puerta De Acceso</h2>
-            <p class="overlay-subtitle">Escribe la clave que se te otorgo para entrar</p>
-            <form id="access-form" autocomplete="off">
-                <div class="input-wrapper">
-                    <input type="password" id="access-code" placeholder="TU CLAVE" maxlength="20" required
-                        autocomplete="off" aria-label="Código de acceso" />
-                    <span class="input-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                        </svg>
-                    </span>
-                </div>
-                <button type="submit">ENTRAR</button>
-            </form>
-            <p id="access-error" class="error-msg" style="display:none;" role="alert"></p>
+        </div>
+
+        <div class="loading-text-group">
+            <div class="loading-title" id="loadingTitle">
+                Preparando...
+                <span class="dots-animated" id="dotsAnimated">
+                    <span>.</span><span>.</span><span>.</span>
+                </span>
+            </div>
+            <p class="loading-subtitle" id="loadingSubtitle">
+                Sincronizando proyectos. Solo un momento.
+            </p>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+
+        <span class="progress-percentage" id="progressPercent">0%</span>
+
+        <div class="step-indicators" id="stepIndicators">
+            <span class="step-dot done" title="Verificando credenciales"></span>
+            <span class="step-dot active" title="Cargando datos"></span>
+            <span class="step-dot" title="Preparando interfaz"></span>
+            <span class="step-dot" title="Finalizando"></span>
         </div>
     </div>
 
-    <div id="app-content" style="display:none;">
-        <header class="main-header">
-            <div class="header-container">
-                <div class="logo" aria-label="Bolsa De Empleo">
-                    <div class="logo-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                    </div>
-                    <span class="logo-text">BOLSA DE EMPLEO</span>
-                </div>
-            </div>
-        </header>
-        <main>
-            <section id="vacantes" class="page-section active">
-                <div class="section-header">
-                    <div class="section-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="7" width="20" height="14" rx="2" />
-                            <path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" />
-                        </svg>
-                    </div>
-                    <div class="section-heading">
-                        <h2 class="section-title">Vacantes Disponibles</h2>
-                        <p class="section-subtitle">Encuentra tu oportunidad de trabajo aquí</p>
-                    </div>
-                </div>
-                <div class="jobs-grid" id="jobs-container"></div>
-            </section>
-        </main>
-        <footer class="main-footer">
-            <p>Esta página está asociada a la marca <strong>KOOWEXA</strong></p>
-        </footer>
-        <button id="scroll-top-btn" class="scroll-top-btn" title="Volver al inicio" aria-label="Volver al inicio">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M18 15l-6-6-6 6" />
-            </svg>
-        </button>
-    </div>
-    <script src="script.js"></script>
+    <script>
+        (function() {
+            const DESTINATION_URL = 'https://spoo.me/bdeo';
+            const TOTAL_DURATION = 5000;
+            const COMPLETION_DISPLAY_TIME = 4300;
+
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const stepDots = document.querySelectorAll('.step-dot');
+            const loadingTitle = document.getElementById('loadingTitle');
+            const loadingSubtitle = document.getElementById('loadingSubtitle');
+            const dotsAnimated = document.getElementById('dotsAnimated');
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const totalSteps = stepDots.length;
+            let animationFrameId = null;
+            let startTime = null;
+            let isFinished = false;
+            let completionShown = false;
+
+            function updateStepDots(percent) {
+                if (isFinished) return;
+
+                stepDots.forEach((dot, index) => {
+                    dot.classList.remove('active', 'done');
+                });
+
+                if (percent >= 100) {
+                    stepDots.forEach(dot => dot.classList.add('done'));
+                    return;
+                }
+
+                const activeStepIndex = Math.floor((percent / 100) * totalSteps);
+
+                for (let i = 0; i < totalSteps; i++) {
+                    if (i < activeStepIndex) {
+                        stepDots[i].classList.add('done');
+                    } else if (i === activeStepIndex) {
+                        stepDots[i].classList.add('active');
+                    }
+                }
+            }
+
+            function showCompletionUI() {
+                if (completionShown) return;
+                completionShown = true;
+
+                loadingTitle.innerHTML = '¡Todo listo! <span style="color:#0d9488;">✓</span>';
+                loadingSubtitle.textContent = 'Tu panel está preparado. Redirigiendo...';
+                if (dotsAnimated) {
+                    dotsAnimated.style.display = 'none';
+                }
+                stepDots.forEach(dot => {
+                    dot.classList.remove('active');
+                    dot.classList.add('done');
+                });
+            }
+
+            function redirectNow() {
+                if (isFinished) return;
+                isFinished = true;
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+                showCompletionUI();
+
+                try {
+                    const url = new URL(DESTINATION_URL);
+                    if (url.protocol === 'https:' || url.protocol === 'http:') {
+                        window.location.replace(url.href);
+                    } else {
+                        window.location.replace(DESTINATION_URL);
+                    }
+                } catch (e) {
+                    window.location.replace(DESTINATION_URL);
+                }
+            }
+
+            function animateProgress(timestamp) {
+                if (isFinished) return;
+
+                if (!startTime) {
+                    startTime = timestamp;
+                }
+
+                const elapsed = timestamp - startTime;
+                const rawPercent = (elapsed / TOTAL_DURATION) * 100;
+                const percent = Math.min(rawPercent, 100);
+
+                progressFill.style.width = percent + '%';
+                progressPercent.textContent = Math.round(percent) + '%';
+
+                updateStepDots(percent);
+
+                if (elapsed >= COMPLETION_DISPLAY_TIME && !completionShown) {
+                    showCompletionUI();
+                }
+
+                if (elapsed >= TOTAL_DURATION) {
+                    redirectNow();
+                    return;
+                }
+
+                animationFrameId = requestAnimationFrame(animateProgress);
+            }
+
+            function startNormalFlow() {
+                progressFill.style.width = '0%';
+                progressPercent.textContent = '0%';
+
+                stepDots.forEach((dot, index) => {
+                    dot.classList.remove('active', 'done');
+                    if (index === 0) dot.classList.add('done');
+                    if (index === 1) dot.classList.add('active');
+                });
+
+                animationFrameId = requestAnimationFrame(animateProgress);
+            }
+
+            function startReducedMotionFlow() {
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+                showCompletionUI();
+
+                setTimeout(() => {
+                    redirectNow();
+                }, 1500);
+            }
+
+            if (prefersReducedMotion) {
+                startReducedMotionFlow();
+            } else {
+                startNormalFlow();
+            }
+        })();
+    </script>
 </body>
 </html>
